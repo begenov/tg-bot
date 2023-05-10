@@ -33,3 +33,16 @@
     Notifications: The bot will send notifications to users when new job openings are posted or when their job application status changes.
 
     Natural Language Processing: The bot can use natural language processing to understand user requests and respond appropriately. This will allow users to interact with the bot in a more conversational manner.
+
+
+##  directory structure
+
+
+  *  cmd/main.go: the main entry point for your application.
+  *  config: directory to hold your application's configuration files.
+  *  controllers: directory to hold your application's controllers. Each controller is responsible for handling requests for a particular part of the application, such as job seeker or employer profiles.
+  *  models: directory to hold your application's data models. Each model represents a data object in your application, such as a user, job posting, or job application.
+  *  views: directory to hold your application's views. Each view represents the user interface for a particular part of the application, such as job seeker or employer profiles.
+  *  utils: directory to hold your application's utility functions.
+  *  locale: directory to hold your application's localization files. Each file contains translations for a particular language, such as English or Spanish.
+    templates: directory to hold your application's template files. Each file represents the layout and content of a particular view.
