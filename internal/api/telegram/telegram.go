@@ -28,14 +28,19 @@ func (b *Bot) Start() error {
 func (b *Bot) handleUpdates(updates tgbotapi.UpdatesChannel) {
 	for update := range updates {
 		if update.Message != nil { // If we got a message
-			log.Printf("[%s] %s", update.Message.From.UserName, update.Message.Text)
 
-			msg := tgbotapi.NewMessage(update.Message.Chat.ID, update.Message.Text)
-			msg.ReplyToMessageID = update.Message.MessageID
-
-			b.bot.Send(msg)
+			b.handleMessage(update.Message)
 		}
 	}
+}
+
+func (b *Bot) handleMessage(message *tgbotapi.Message) {
+	log.Printf("[%s] %s", message.From.UserName, message.Text)
+
+	msg := tgbotapi.NewMessage(message.Chat.ID, message.Text)
+	msg.ReplyToMessageID = message.MessageID
+
+	b.bot.Send(msg)
 }
 
 func (b *Bot) initUpdatesChannell() tgbotapi.UpdatesChannel {
