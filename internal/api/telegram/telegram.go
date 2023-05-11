@@ -18,11 +18,14 @@ func (b *Bot) Start() error {
 
 	log.Printf("Authorized on account %s", b.bot.Self.UserName)
 
-	u := tgbotapi.NewUpdate(0)
-	u.Timeout = 60
+	updates := b.initUpdatesChannell()
 
-	updates := b.bot.GetUpdatesChan(u)
+	b.handleUpdates(updates)
 
+	return nil
+}
+
+func (b *Bot) handleUpdates(updates tgbotapi.UpdatesChannel) {
 	for update := range updates {
 		if update.Message != nil { // If we got a message
 			log.Printf("[%s] %s", update.Message.From.UserName, update.Message.Text)
@@ -33,5 +36,13 @@ func (b *Bot) Start() error {
 			b.bot.Send(msg)
 		}
 	}
-	return nil
+}
+
+func (b *Bot) initUpdatesChannell() tgbotapi.UpdatesChannel {
+	u := tgbotapi.NewUpdate(0)
+	u.Timeout = 60
+
+	updates := b.bot.GetUpdatesChan(u)
+	return updates
+
 }
