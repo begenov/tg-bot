@@ -1,11 +1,10 @@
 package telegram
 
 import (
-	"log"
-
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
+/*
 type Bot struct {
 	bot *tgbotapi.BotAPI
 }
@@ -23,4 +22,22 @@ func (b *Bot) Start() error {
 	b.handleUpdates(updates)
 
 	return nil
+}
+*/
+
+type TelegramAPI struct {
+	bot     *tgbotapi.BotAPI
+	Message *TelegramMessage
+}
+
+func NewTelegramAPI(token string) (*TelegramAPI, error) {
+	bot, err := tgbotapi.NewBotAPI("")
+
+	if err != nil {
+		return nil, err
+	}
+
+	bot.Debug = true
+	return &TelegramAPI{bot: bot,
+		Message: NewTelegramMessage(bot)}, nil
 }

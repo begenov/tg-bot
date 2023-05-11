@@ -1,13 +1,8 @@
 package telegram
 
-import (
-	"log"
-
-	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
-)
-
 const commandStart = "start"
 
+/*
 func (b *Bot) handlerCommand(message *tgbotapi.Message) error {
 	msg := tgbotapi.NewMessage(message.Chat.ID, "Я не знаю такой команды :(")
 	switch message.Command() {
@@ -52,3 +47,4 @@ func (b *Bot) initUpdatesChannell() tgbotapi.UpdatesChannel {
 	return updates
 
 }
+*/

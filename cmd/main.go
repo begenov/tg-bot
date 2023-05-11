@@ -1,23 +1,18 @@
 package main
 
 import (
-	"log"
-
 	"github.com/begenov/tg-bot/internal/api/telegram"
-	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
+	"github.com/begenov/tg-bot/internal/config"
 )
 
 func main() {
-	bot, err := tgbotapi.NewBotAPI("")
+	cfg, err := config.NewConfig()
 	if err != nil {
-		log.Panic(err)
+		return
 	}
-
-	bot.Debug = true
-
-	telegramBot := telegram.NewBotAPI(bot)
-	if err := telegramBot.Start(); err != nil {
-		log.Fatal(err)
+	telegramAPI, err := telegram.NewTelegramAPI(cfg.Bot.Token)
+	if err != nil {
+		return
 	}
 
 }
