@@ -11,7 +11,6 @@ type Handler struct {
 }
 
 func NewHandler(service *service.Service, API *telegram.TelegramAPI) *Handler {
-
 	return &Handler{
 		service:     service,
 		telegramAPI: API,
@@ -19,5 +18,8 @@ func NewHandler(service *service.Service, API *telegram.TelegramAPI) *Handler {
 }
 
 func (h *Handler) Start() error {
+	if err := h.telegramAPI.StartTelegramAPI(); err != nil {
+		return nil
+	}
 	return nil
 }

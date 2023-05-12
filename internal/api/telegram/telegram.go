@@ -1,29 +1,10 @@
 package telegram
 
 import (
+	"log"
+
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
-
-/*
-type Bot struct {
-	bot *tgbotapi.BotAPI
-}
-
-func NewBotAPI(bot *tgbotapi.BotAPI) *Bot {
-	return &Bot{bot: bot}
-}
-
-func (b *Bot) Start() error {
-
-	log.Printf("Authorized on account %s", b.bot.Self.UserName)
-
-	updates := b.initUpdatesChannell()
-
-	b.handleUpdates(updates)
-
-	return nil
-}
-*/
 
 type TelegramAPI struct {
 	bot     *tgbotapi.BotAPI
@@ -31,7 +12,7 @@ type TelegramAPI struct {
 }
 
 func NewTelegramAPI(token string) (*TelegramAPI, error) {
-	bot, err := tgbotapi.NewBotAPI("")
+	bot, err := tgbotapi.NewBotAPI(token)
 
 	if err != nil {
 		return nil, err
@@ -40,4 +21,15 @@ func NewTelegramAPI(token string) (*TelegramAPI, error) {
 	bot.Debug = true
 	return &TelegramAPI{bot: bot,
 		Message: NewTelegramMessage(bot)}, nil
+}
+
+func (api *TelegramAPI) StartTelegramAPI() error {
+
+	log.Printf("Authorized on account %s", api.bot.Self.UserName)
+
+	updates := api.initUpdatesChannell()
+
+	api.handleUpdates(updates)
+
+	return nil
 }
