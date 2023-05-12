@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"github.com/begenov/tg-bot/test-telegram-app/internal/services"
+	"github.com/begenov/tg-bot/internal/services"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 

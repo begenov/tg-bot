@@ -1,7 +1,7 @@
 package services
 
 import (
-	"github.com/begenov/tg-bot/test-telegram-app/internal/repository"
+	"github.com/begenov/tg-bot/internal/repository"
 )
 
 type Service struct {

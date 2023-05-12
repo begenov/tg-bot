@@ -11,5 +11,4 @@ func (api *TelegramAPI) handleCommand(message *tgbotapi.Message) error {
 	default:
 		return api.handleUnknownCommand()
 	}
-	return nil
 }

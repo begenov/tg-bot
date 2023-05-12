@@ -2,10 +2,10 @@ package app
 
 import (
 	"github.com/begenov/tg-bot/db"
-	"github.com/begenov/tg-bot/test-telegram-app/internal/config"
-	"github.com/begenov/tg-bot/test-telegram-app/internal/handlers"
-	"github.com/begenov/tg-bot/test-telegram-app/internal/repository"
-	"github.com/begenov/tg-bot/test-telegram-app/internal/services"
+	"github.com/begenov/tg-bot/internal/config"
+	"github.com/begenov/tg-bot/internal/handlers"
+	"github.com/begenov/tg-bot/internal/repository"
+	"github.com/begenov/tg-bot/internal/services"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
@@ -28,5 +28,5 @@ func Run(cfg *config.Config) error {
 
 	telegramBot := handlers.NewTelegramAPI(bot, services)
 
-	return nil
+	return telegramBot.StartTelegramAPI()
 }
