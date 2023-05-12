@@ -14,7 +14,7 @@ func (api *TelegramAPI) handleStartCommand(message *tgbotapi.Message) error {
 	// start
 	log.Printf("[%s] %s", message.From.UserName, message.Text)
 
-	msg := tgbotapi.NewMessage(message.Chat.ID, "Здравствуйте, это Telegram-bot по поиску работы и сотрудников.\nВыберите язык: русский/казахский")
+	msg := tgbotapi.NewMessage(message.Chat.ID, "Здравствуйте, это Telegram-bot по поиску работы и сотрудников.\nВыберите язык:")
 	inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(
 		tgbotapi.NewInlineKeyboardRow(
 			tgbotapi.NewInlineKeyboardButtonData("русский", "russian"),
@@ -24,13 +24,14 @@ func (api *TelegramAPI) handleStartCommand(message *tgbotapi.Message) error {
 	msg.ReplyMarkup = inlineKeyboard
 	api.bot.Send(msg)
 
-	if message.Text == "русский" {
-		// Handle Russian language
-		// ...
-	} else if message.Text == "казахский" {
-		// Handle Kazakh language
-		// ...
+	switch msg.Text {
+	case "русский":
+		api.handleRussianlanguage(msg)
+	case "казахский":
+		api.handleKazakhlanguage(msg)
+	default:
 	}
+
 	return nil
 }
 
