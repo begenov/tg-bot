@@ -1,6 +1,10 @@
 package db
 
-import "database/sql"
+import (
+	"database/sql"
+
+	_ "github.com/mattn/go-sqlite3"
+)
 
 func NewDB(driver string, dsn string) (*sql.DB, error) {
 	db, err := sql.Open(driver, dsn)
