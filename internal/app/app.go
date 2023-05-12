@@ -13,17 +13,19 @@ import (
 
 type Application struct {
 	cfg *config.Config
-	api *telegram.TelegramAPI
 }
 
-func NewApp(cfg *config.Config, api *telegram.TelegramAPI) *Application {
+func NewApp(cfg *config.Config) *Application {
 	return &Application{
 		cfg: cfg,
-		api: api,
 	}
 }
 
 func (app *Application) Run() error {
+	telegramAPI, err := telegram.NewTelegramAPI(app.cfg.Bot.Token)
+	if err != nil {
+		return err
+	}
 
 	db, err := db.NewDB(app.cfg.SQLite.Driver, app.cfg.SQLite.DSN)
 	if err != nil {
@@ -34,7 +36,9 @@ func (app *Application) Run() error {
 
 	service := service.NewService(repository)
 
-	handler := handler.NewHandler(service)
+	handler := handler.NewHandler(service, telegramAPI)
+
 	fmt.Println(handler)
+
 	return nil
 }
