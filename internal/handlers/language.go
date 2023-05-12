@@ -5,7 +5,6 @@ import (
 )
 
 func (api *TelegramAPI) handleRussianlanguage(message tgbotapi.MessageConfig) {
-
 }
 
 func (api *TelegramAPI) handleKazakhlanguage(message tgbotapi.MessageConfig) {

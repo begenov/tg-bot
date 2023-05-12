@@ -17,11 +17,12 @@ func (api *TelegramAPI) handleStartCommand(message *tgbotapi.Message) error {
 	msg := tgbotapi.NewMessage(message.Chat.ID, "Здравствуйте, это Telegram-bot по поиску работы и сотрудников.\nВыберите язык:")
 	inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(
 		tgbotapi.NewInlineKeyboardRow(
-			tgbotapi.NewInlineKeyboardButtonData("русский", "russian"),
 			tgbotapi.NewInlineKeyboardButtonData("казахский", "kazakh"),
+			tgbotapi.NewInlineKeyboardButtonData("русский", "russian"),
 		),
 	)
 	msg.ReplyMarkup = inlineKeyboard
+
 	api.bot.Send(msg)
 
 	switch msg.Text {
