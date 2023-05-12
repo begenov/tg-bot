@@ -1,5 +1,12 @@
 package config
 
+import (
+	"log"
+	"os"
+
+	"github.com/subosito/gotenv"
+)
+
 type Config struct {
 	TelegramAPI struct {
 		Token   string
@@ -11,13 +18,22 @@ type Config struct {
 	}
 }
 
-func NewConfig() *Config {
+const path = "./.env"
+
+func NewConfig() (*Config, error) {
 	cfg := &Config{}
 
-	cfg.TelegramAPI.Token = ""
-	cfg.TelegramAPI.BaseURL = ""
+	err := gotenv.Load(path)
 
-	cfg.DB.Driver = "sqlite3"
-	cfg.DB.DSN = "telegram.db"
-	return cfg
+	if err != nil {
+		return nil, err
+	}
+
+	cfg.TelegramAPI.Token = os.Getenv("TELEGRAM_API_TOKEN")
+	cfg.TelegramAPI.BaseURL = os.Getenv("TELEGRAM_API_BASE_URL")
+
+	cfg.DB.Driver = os.Getenv("DRIVER")
+	cfg.DB.DSN = os.Getenv("DSN")
+	log.Println(cfg)
+	return cfg, nil
 }

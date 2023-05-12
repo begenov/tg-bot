@@ -19,6 +19,7 @@ func Run(cfg *config.Config) error {
 	bot.Debug = true
 
 	db, err := db.NewDB(cfg.DB.Driver, cfg.DB.DSN)
+
 	if err != nil {
 		return err
 	}
