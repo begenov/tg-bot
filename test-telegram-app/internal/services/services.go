@@ -1,20 +1,16 @@
 package services
 
-import "github.com/begenov/tg-bot/test-telegram-app/internal/repository"
+import (
+	"github.com/begenov/tg-bot/test-telegram-app/internal/repository"
+)
 
 type Service struct {
-	TelegramAPI *TelegramAPI
-	repository  *repository.Repository
+	repository *repository.Repository
 }
 
-func NewService(token string, repos *repository.Repository) (*Service, error) {
-	telegramAPI, err := NewTelegramAPI(token)
-	if err != nil {
-		return nil, err
-	}
+func NewService(repos *repository.Repository) *Service {
 
 	return &Service{
-		TelegramAPI: telegramAPI,
-		repository:  repos,
-	}, err
+		repository: repos,
+	}
 }
