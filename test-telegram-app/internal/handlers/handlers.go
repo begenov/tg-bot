@@ -14,6 +14,6 @@ func (api *TelegramAPI) handleUnknownCommand() error {
 	return nil
 }
 
-func (api *TelegramAPI) hadnleMessage(message tgbotapi.Message) error {
+func (api *TelegramAPI) hadnleMessage(message *tgbotapi.Message) error {
 	return nil
 }
