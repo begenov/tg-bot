@@ -1,7 +1,10 @@
 package main
 
 import (
+	"log"
+
 	"github.com/begenov/tg-bot/internal/api/telegram"
+	"github.com/begenov/tg-bot/internal/app"
 	"github.com/begenov/tg-bot/internal/config"
 )
 
@@ -15,4 +18,9 @@ func main() {
 		return
 	}
 
+	app := app.NewApp(cfg, telegramAPI)
+
+	if err := app.Run(); err != nil {
+		log.Println(err)
+	}
 }
