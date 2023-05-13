@@ -8,6 +8,7 @@ func (api *TelegramAPI) handleCommand(message *tgbotapi.Message) error {
 	switch message.Command() {
 	case commandStart:
 		return api.handleStartCommand(message)
+
 	default:
 		return api.handleUnknownCommand(message)
 	}

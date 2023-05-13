@@ -1,6 +1,8 @@
 package handlers
 
 import (
+	"log"
+
 	"github.com/begenov/tg-bot/internal/services"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
@@ -22,10 +24,14 @@ func (api *TelegramAPI) StartTelegramAPI() error {
 	u := tgbotapi.NewUpdate(0)
 
 	u.Timeout = 60
-
 	updates := api.bot.GetUpdatesChan(u)
-
 	for update := range updates {
+
+		if update.CallbackQuery != nil {
+			log.Println("err")
+			continue
+		}
+
 		if update.Message == nil {
 			continue
 		}
