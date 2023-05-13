@@ -18,6 +18,7 @@ func (api *TelegramAPI) handleCallbackQuery(callbackQuery *tgbotapi.CallbackQuer
 	if callbackQuery.Data == "kazakh" {
 		// пользователь выбрал казахский язык
 	} else if callbackQuery.Data == "russian" {
+		// api.handleRussianlanguage()
 		// пользователь выбрал русский язык
 	} else {
 		// обработка ошибки, если значение Data не соответствует ожидаемым значениям

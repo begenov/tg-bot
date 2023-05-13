@@ -29,5 +29,5 @@ func Run(cfg *config.Config) error {
 
 	telegramBot := handlers.NewTelegramAPI(bot, services)
 
-	return telegramBot.StartTelegramAPI()
+	return telegramBot.StartTelegramAPI(cfg)
 }

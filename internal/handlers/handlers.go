@@ -6,6 +6,7 @@ import (
 
 const (
 	commandStart = "start"
+	commandName  = "set_name"
 )
 
 func (api *TelegramAPI) handleStartCommand(message *tgbotapi.Message) error {
@@ -24,8 +25,17 @@ func (api *TelegramAPI) handleStartCommand(message *tgbotapi.Message) error {
 	return nil
 }
 
+func (api *TelegramAPI) handleNameSetCommand(update tgbotapi.Update) error {
+
+	msg := tgbotapi.NewMessage(update.Message.Chat.ID, "Отлично! Как к Вам можно обращаться?")
+
+	api.bot.Send(msg)
+
+	return nil
+}
+
 func (api *TelegramAPI) handleUnknownCommand(message *tgbotapi.Message) error {
-	msg := tgbotapi.NewMessage(message.Chat.ID, "Hello User")
+	msg := tgbotapi.NewMessage(message.Chat.ID, "неверный command")
 	api.bot.Send(msg)
 	return nil
 }
