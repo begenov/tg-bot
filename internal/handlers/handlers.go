@@ -7,6 +7,42 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
+func (api *TelegramAPI) profileUser(update tgbotapi.Update, chatId int64, msg tgbotapi.MessageConfig) {
+	switch api.usermapa[chatId].Stage {
+	case 0:
+		if update.CallbackQuery != nil {
+			api.choseKazakhHandler(update, msg, chatId)
+			break
+		}
+	case 1:
+		if update.Message != nil {
+			api.nameHandler(update, chatId, msg)
+			break
+		}
+	case 2:
+		if update.Message.Contact != nil {
+			api.phoneNumberHandler1(update, chatId, msg)
+			break
+		}
+		if update.Message != nil {
+			api.phoneNumberHandler2(update, chatId, msg)
+			break
+		}
+	case 4:
+		if update.Message != nil {
+			api.checkPhoneNumberHandler(update, chatId, msg)
+			break
+
+		}
+		// fallthrough
+	case 5:
+		if update.CallbackQuery != nil {
+			api.coverLetterHandler(update, chatId, msg)
+			break
+		}
+	}
+}
+
 func (api *TelegramAPI) choseKazakhHandler(update tgbotapi.Update, msg tgbotapi.MessageConfig, chatId int64) {
 	lang := update.CallbackQuery.Data
 	api.usermapa[chatId].Stage = 1

@@ -42,51 +42,8 @@ func (api *TelegramAPI) StartTelegramAPI() error {
 			continue
 		}
 
-		switch api.usermapa[chatId].Stage {
-		case 0:
-			if update.CallbackQuery != nil {
-				api.choseKazakhHandler(update, msg, chatId)
-				continue
-			}
-		case 1:
-			if update.Message != nil {
-				api.nameHandler(update, chatId, msg)
-				continue
-			}
-		case 2:
-			if update.Message.Contact != nil {
-				api.phoneNumberHandler1(update, chatId, msg)
-				continue
-			}
-			if update.Message != nil {
-				api.phoneNumberHandler2(update, chatId, msg)
-				continue
-			}
-		case 4:
-			if update.Message != nil {
-				api.checkPhoneNumberHandler(update, chatId, msg)
-				continue
+		api.profileUser(update, chatId, msg)
 
-			}
-			// fallthrough
-		case 5:
-			if update.CallbackQuery != nil {
-				api.coverLetterHandler(update, chatId, msg)
-				continue
-			}
-			// if update.Message != nil {
-			// 	api.usermapa[chatId].aim = update.Message.Text
-			// 	api.usermapa[chatId].Stage = 6
-			// 	if api.usermapa[chatId].lang == "kazakh" {
-			// 		msg.Text = "Сопроводительное письмо"
-			// 	} else {
-			// 		msg.Text = "Сопроводительное письмо"
-			// 	}
-			// 	api.bot.Send(msg)
-			// 	continue
-			// }
-
-		}
 	}
 
 	return nil
