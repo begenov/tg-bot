@@ -24,7 +24,6 @@ func NewConfig() (*Config, error) {
 	cfg := &Config{}
 
 	err := gotenv.Load(path)
-
 	if err != nil {
 		return nil, err
 	}
