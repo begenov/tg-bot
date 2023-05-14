@@ -51,10 +51,7 @@ func (api *TelegramAPI) profileUser(update tgbotapi.Update, chatId int64, msg tg
 		}
 
 	case 7:
-		// if update.Message != nil {
-		// 	api.genderHandler(update, chatId, msg)
-		// 	break
-		// }
+
 		if update.CallbackQuery != nil {
 			api.genderHandler(update, chatId, msg)
 			break
@@ -189,12 +186,12 @@ func (api *TelegramAPI) coverLetterHandler(update tgbotapi.Update, chatId int64,
 	// api.usermapa[chatId].Stage = 8
 	// fmt.Println("--------------The aim is ", api.usermapa[chatId].aim)
 	age := ""
-	if api.usermapa[chatId].lang == "kazakh" {
-		msg.Text = "Сопроводительное письмо"
+	if api.usermapa[chatId].lang == models.Kazakh {
+		msg.Text = models.KazakhAccompanyingMess
 		age = models.KazakhAgeInfo
 
-	} else {
-		msg.Text = "Сопроводительное письмо"
+	} else if api.usermapa[chatId].lang == models.Russian {
+		msg.Text = models.RussianAccompanyingMess
 		age = models.RussianAgeInfo
 	}
 	api.bot.Send(msg)
@@ -207,25 +204,29 @@ func (api *TelegramAPI) coverLetterHandler(update tgbotapi.Update, chatId int64,
 func (api *TelegramAPI) ageUserHandler(update tgbotapi.Update, chatId int64, msg tgbotapi.MessageConfig) {
 	api.usermapa[chatId].age, _ = strconv.Atoi(msg.Text)
 
-	gender := ""
-	if api.usermapa[chatId].lang == "kazakh" {
+	showGender := ""
 
-		gender = models.KazakhGender
+	var genderMale, genderFemale string
+	if api.usermapa[chatId].lang == models.Kazakh {
+		genderMale = models.KazakhGenderMale
+		genderFemale = models.KazakhGenderFemale
+		showGender = models.KazakhGender
 
-	} else {
-
-		gender = models.RussianGender
+	} else if api.usermapa[chatId].lang == models.Russian {
+		genderMale = models.RussianGenderMale
+		genderFemale = models.RussianGenderFemale
+		showGender = models.RussianGender
 	}
 
 	inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(
 		tgbotapi.NewInlineKeyboardRow(
-			tgbotapi.NewInlineKeyboardButtonData("Male", "1"),
-			tgbotapi.NewInlineKeyboardButtonData("Female", "0"),
+			tgbotapi.NewInlineKeyboardButtonData(genderMale, "1"),
+			tgbotapi.NewInlineKeyboardButtonData(genderFemale, "0"),
 		),
 	)
 
 	msg.ReplyMarkup = inlineKeyboard
-	msg.Text = gender
+	msg.Text = showGender
 	api.usermapa[chatId].Stage = 7
 
 	api.bot.Send(msg)
@@ -238,12 +239,23 @@ func (api *TelegramAPI) genderHandler(update tgbotapi.Update, chatId int64, msg 
 		log.Fatal(err)
 
 	}
+
+	info := ""
+	if api.usermapa[chatId].lang == models.Kazakh {
+
+		info = models.InfoInKazakh
+
+	} else if api.usermapa[chatId].lang == models.Russian {
+
+		info = models.InfoInRussian
+	}
+
 	api.usermapa[chatId].gender = gen
 	api.usermapa[chatId].Stage = 8
-	ms := fmt.Sprintf("Сведение данных:\nИмя: %s\nНомер: %s\nДеятельность:%s\nВозраст:%d\nПол:%d\n", api.usermapa[chatId].name, api.usermapa[chatId].phone, api.usermapa[chatId].aim, api.usermapa[chatId].age, api.usermapa[chatId].gender)
-	if api.usermapa[chatId].lang == "kazakh" {
+	ms := fmt.Sprintf(info, api.usermapa[chatId].name, api.usermapa[chatId].phone, api.usermapa[chatId].aim, api.usermapa[chatId].age, api.usermapa[chatId].gender)
+	if api.usermapa[chatId].lang == models.Kazakh {
 		msg.Text = ms
-	} else {
+	} else if api.usermapa[chatId].lang == models.Russian {
 		msg.Text = ms
 	}
 	api.bot.Send(msg)
