@@ -11,7 +11,7 @@ const (
 	ChoseRussian        = "Вы выбрали русский язык"
 	RussianName         = "Введите имя: "
 	RussianHello        = "Здравствуйте, "
-	RussianNumberButton = "Нөмірмен бөлісу"
+	RussianNumberButton = "Для регистрации бота нам понадобится ваш номер телефона."
 )
 
 // Kazakh

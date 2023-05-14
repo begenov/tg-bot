@@ -10,11 +10,13 @@ type TelegramAPI struct {
 	services *services.Service
 	usermapa map[int64]*User
 }
+
 type User struct {
 	Stage int
 	lang  string
 	name  string
 	phone string
+	aim   string
 }
 
 func NewTelegramAPI(bot *tgbotapi.BotAPI, servces *services.Service) *TelegramAPI {
@@ -40,18 +42,8 @@ func (api *TelegramAPI) StartTelegramAPI() error {
 			continue
 		}
 
-		switch api.usermapa[chatId].Stage {
-		case 0:
-			if update.CallbackQuery != nil {
-				api.choseKazakhHandler(update, msg, chatId)
-				continue
-			}
-		case 1:
-			if update.Message != nil {
-				api.nameHandler(update, chatId, msg)
-				continue
-			}
-		}
+		api.profileUser(update, chatId, msg)
+
 	}
 
 	return nil
