@@ -1,8 +1,7 @@
 package handlers
 
 import (
-	"fmt"
-
+	"github.com/begenov/tg-bot/internal/models"
 	"github.com/begenov/tg-bot/internal/services"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
@@ -31,6 +30,7 @@ func (api *TelegramAPI) StartTelegramAPI() error {
 	u := tgbotapi.NewUpdate(0)
 
 	u.Timeout = 60
+
 	updates := api.bot.GetUpdatesChan(u)
 	for update := range updates {
 
@@ -43,21 +43,19 @@ func (api *TelegramAPI) StartTelegramAPI() error {
 			continue
 		}
 
-		fmt.Println(api.usermapa[chatId], "oooooooooooooooooo")
 		switch api.usermapa[chatId].Stage {
 		case 0:
 			if update.CallbackQuery != nil {
 				lang := update.CallbackQuery.Data
 				api.usermapa[chatId].Stage = 1
-				fmt.Println(api.usermapa[chatId], "----------")
 
 				msg2 := tgbotapi.NewMessage(chatId, "")
-				if lang == "kazakh" {
-					msg.Text = "сіз Қазақ тілің таңдадыңыз"
-					msg2.Text = "Атыңызды енгізіңіз: "
-				} else {
-					msg.Text = "Вы выбрали русский язык"
-					msg2.Text = "Введите имя: "
+				if lang == models.Kazakh {
+					msg.Text = models.ChoseKazakh
+					msg2.Text = models.KazakhName
+				} else if lang == models.Russian {
+					msg.Text = models.ChoseRussian
+					msg2.Text = models.RussianName
 				}
 
 				api.bot.Send(msg)
