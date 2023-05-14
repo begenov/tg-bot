@@ -37,7 +37,6 @@ func (api *TelegramAPI) StartTelegramAPI() error {
 	for update := range updates {
 
 		chatId := update.FromChat().ID
-
 		msg := tgbotapi.NewMessage(chatId, "")
 
 		if _, exi := api.usermapa[chatId]; !exi {
@@ -48,59 +47,14 @@ func (api *TelegramAPI) StartTelegramAPI() error {
 		switch api.usermapa[chatId].Stage {
 		case 0:
 			if update.CallbackQuery != nil {
-				lang := update.CallbackQuery.Data
-				api.usermapa[chatId].lang = lang
-				// fmt.Println(lang, "-------------------------")
-				api.usermapa[chatId].Stage = 1
-
-				msg2 := tgbotapi.NewMessage(chatId, "")
-				if lang == "kazakh" {
-					msg.Text = "сіз Қазақ тілің таңдадыңыз"
-					msg2.Text = "Атыңызды енгізіңіз: "
-				} else {
-					msg.Text = "Вы выбрали русский язык"
-					msg2.Text = "Введите имя: "
-				}
-
-				api.bot.Send(msg)
-				api.bot.Send(msg2)
+				api.choseKazakhHandler(update, msg, chatId)
 				continue
 			}
 		case 1:
 			if update.Message != nil {
-				name := update.Message.Text
-				api.usermapa[chatId].name = name
-				api.usermapa[chatId].Stage = 2
-
-				shareButton := tgbotapi.NewKeyboardButtonContact("")
-				msg2 := tgbotapi.NewMessage(chatId, "")
-
-				if api.usermapa[chatId].lang == "kazakh" {
-					msg.Text = "Сәлем, " + name
-
-					shareButton.Text = "Нөмірмен бөлісу"
-
-					msg2.Text = "Ботқа тіркелу үшін бізге телефон нөміріңіз қажет."
-				} else {
-					msg.Text = "Здравствуйте, " + name
-
-					shareButton.Text = "Поделиться номером"
-
-					msg2.Text = "Для регистрации в боте нам нужен Ваш номер телефона"
-				}
-
-				keyboard := tgbotapi.NewReplyKeyboard(
-					tgbotapi.NewKeyboardButtonRow(shareButton),
-				)
-				keyboard.OneTimeKeyboard = true // set OneTimeKeyboard to true
-
-				api.bot.Send(msg)
-				msg2.ReplyMarkup = keyboard
-				api.bot.Send(msg2)
-
+				api.nameHandler(update, chatId, msg)
 				continue
 			}
-
 		case 2:
 			if update.Message.Contact != nil {
 				phoneNumber := update.Message.Contact.PhoneNumber
@@ -161,7 +115,7 @@ func (api *TelegramAPI) StartTelegramAPI() error {
 			if update.CallbackQuery != nil {
 				api.usermapa[chatId].aim = update.CallbackQuery.Data
 				api.usermapa[chatId].Stage = 6
-				fmt.Println("--------------The aim is ", api.usermapa[chatId].aim)
+				// fmt.Println("--------------The aim is ", api.usermapa[chatId].aim)
 				if api.usermapa[chatId].lang == "kazakh" {
 					msg.Text = "Сопроводительное письмо"
 				} else {
