@@ -17,6 +17,7 @@ type User struct {
 	name   string
 	phone  string
 	aim    string
+	age    int
 	gender int
 }
 
