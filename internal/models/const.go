@@ -17,6 +17,8 @@ const (
 	RussianSearch          = "%s спасибо за регистрацию! Вы ищите работу или сотрудника?"
 	RussianWorkButton      = "ищу работу"
 	RussianEmployeeButton  = "ишу сотрудника"
+	RussianAgeButton       = "ввести возраст"
+	RussianAgeInfo         = "Осталось совсем немного до окончания регистрации. Введите, пожалуйста, свой возраст."
 )
 
 // Kazakh
@@ -31,4 +33,6 @@ const (
 	KazakhSearch          = "%s тіркелгеніңіз үшін рахмет! Сіз жұмыс немесе қызметкер іздеп жүрсіз бе?"
 	KazakhWorkButton      = "жұмыс іздеу"
 	KazakhEmployeeButton  = "қызметкер іздеу"
+	KazakhAgeButton       = "жасын енгізіңіз"
+	KazakhAgeInfo         = "Тіркеу аяқталғанға дейін аз ғана уақыт қалды. Жасыңызды енгізіңіз."
 )

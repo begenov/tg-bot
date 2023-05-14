@@ -40,6 +40,10 @@ func (api *TelegramAPI) profileUser(update tgbotapi.Update, chatId int64, msg tg
 			api.coverLetterHandler(update, chatId, msg)
 			break
 		}
+	case 6:
+		if update.Message != nil {
+			api.ageUserHandler(update, chatId, msg)
+		}
 	}
 }
 
@@ -171,4 +175,14 @@ func (api *TelegramAPI) coverLetterHandler(update tgbotapi.Update, chatId int64,
 		msg.Text = "Сопроводительное письмо"
 	}
 	api.bot.Send(msg)
+	inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(
+		tgbotapi.NewInlineKeyboardRow(
+			tgbotapi.NewInlineKeyboardButtonData(models.RussianAgeButton, "age"),
+		),
+	)
+	msg.ReplyMarkup = inlineKeyboard
+}
+
+func (api *TelegramAPI) ageUserHandler(update tgbotapi.Update, chatId int64, msg tgbotapi.MessageConfig) {
+
 }
