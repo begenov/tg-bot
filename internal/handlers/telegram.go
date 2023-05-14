@@ -1,6 +1,8 @@
 package handlers
 
 import (
+	"log"
+
 	"github.com/begenov/tg-bot/internal/services"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
@@ -95,9 +97,10 @@ func (api *TelegramAPI) StartTelegramAPI() error {
 				continue
 			}
 
-		case 3:
+		case 2:
 			if update.Message.Contact != nil {
 				phoneNumber := update.Message.Contact.PhoneNumber
+				log.Fatal(phoneNumber)
 				api.usermapa[chatId].phone = phoneNumber
 				api.usermapa[chatId].Stage = 4
 				if api.usermapa[chatId].lang == "kazakh" {
