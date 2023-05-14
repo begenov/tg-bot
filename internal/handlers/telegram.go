@@ -1,8 +1,6 @@
 package handlers
 
 import (
-	"fmt"
-
 	"github.com/begenov/tg-bot/internal/services"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
@@ -43,13 +41,11 @@ func (api *TelegramAPI) StartTelegramAPI() error {
 			continue
 		}
 
-		fmt.Println(api.usermapa[chatId], "oooooooooooooooooo")
 		switch api.usermapa[chatId].Stage {
 		case 0:
 			if update.CallbackQuery != nil {
 				lang := update.CallbackQuery.Data
 				api.usermapa[chatId].Stage = 1
-				fmt.Println(api.usermapa[chatId], "----------")
 
 				msg2 := tgbotapi.NewMessage(chatId, "")
 				if lang == "kazakh" {
@@ -81,19 +77,52 @@ func (api *TelegramAPI) StartTelegramAPI() error {
 					msg2.Text = "Ботқа тіркелу үшін бізге телефон нөміріңіз қажет."
 				} else {
 					msg.Text = "Здравствуйте, " + name
-					shareButton.Text = "Для регистрации в боте нам нужен ваш номер телефона."
+
+					shareButton.Text = "Поделиться номером"
+
+					msg2.Text = "Для регистрации в боте нам нужен Ваш номер телефона"
 				}
 
 				keyboard := tgbotapi.NewReplyKeyboard(
 					tgbotapi.NewKeyboardButtonRow(shareButton),
 				)
+				keyboard.OneTimeKeyboard = true // set OneTimeKeyboard to true
 
 				api.bot.Send(msg)
-
 				msg2.ReplyMarkup = keyboard
 				api.bot.Send(msg2)
+
 				continue
 			}
+
+		case 3:
+			if update.Message.Contact != nil {
+				phoneNumber := update.Message.Contact.PhoneNumber
+				api.usermapa[chatId].phone = phoneNumber
+				api.usermapa[chatId].Stage = 4
+				if api.usermapa[chatId].lang == "kazakh" {
+					msg.Text = "Сізге коды бар SMS хабарлама келеді. Оны енгізіңіз."
+				} else {
+					msg.Text = "Вы получите SMS-уведомление с кодом. Введите его, пожалуйста."
+				}
+				api.bot.Send(msg)
+				continue
+			}
+		case 4:
+			if update.Message != nil {
+				code := update.Message.Text
+				if code != "0000" {
+					if api.usermapa[chatId].lang == "kazakh" {
+						msg.Text = "Сізге коды бар SMS хабарлама келеді. Оны енгізіңіз."
+					} else {
+						msg.Text = "Вы получите SMS-уведомление с кодом. Введите его, пожалуйста."
+					}
+					continue
+				}
+				api.usermapa[chatId].Stage = 4
+
+			}
+
 		}
 	}
 
