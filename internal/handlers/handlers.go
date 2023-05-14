@@ -2,6 +2,8 @@ package handlers
 
 import (
 	"fmt"
+	"log"
+	"strconv"
 
 	"github.com/begenov/tg-bot/internal/models"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
@@ -38,6 +40,15 @@ func (api *TelegramAPI) profileUser(update tgbotapi.Update, chatId int64, msg tg
 	case 5:
 		if update.CallbackQuery != nil {
 			api.coverLetterHandler(update, chatId, msg)
+			break
+		}
+	case 8:
+		// if update.Message != nil {
+		// 	api.genderHandler(update, chatId, msg)
+		// 	break
+		// }
+		if update.CallbackQuery != nil {
+			api.genderHandler(update, chatId, msg)
 			break
 		}
 	}
@@ -163,12 +174,41 @@ func (api *TelegramAPI) nameHandler(update tgbotapi.Update, chatId int64, msg tg
 
 func (api *TelegramAPI) coverLetterHandler(update tgbotapi.Update, chatId int64, msg tgbotapi.MessageConfig) {
 	api.usermapa[chatId].aim = update.CallbackQuery.Data
-	api.usermapa[chatId].Stage = 6
+	// api.usermapa[chatId].Stage = 8
 	// fmt.Println("--------------The aim is ", api.usermapa[chatId].aim)
 	if api.usermapa[chatId].lang == "kazakh" {
 		msg.Text = "Сопроводительное письмо"
 	} else {
 		msg.Text = "Сопроводительное письмо"
+	}
+	api.bot.Send(msg)
+	// new codeeee gender -----------------------
+	msg.Text = "Укажите пол"
+	inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(
+		tgbotapi.NewInlineKeyboardRow(
+			tgbotapi.NewInlineKeyboardButtonData("Male", "1"),
+			tgbotapi.NewInlineKeyboardButtonData("Female", "0"),
+		),
+	)
+	msg.ReplyMarkup = inlineKeyboard
+	api.usermapa[chatId].Stage = 8
+	api.bot.Send(msg)
+}
+
+func (api *TelegramAPI) genderHandler(update tgbotapi.Update, chatId int64, msg tgbotapi.MessageConfig) {
+	gen, err := strconv.Atoi(update.CallbackQuery.Data)
+	if err != nil {
+		fmt.Println("gender handler error --------")
+		log.Fatal(err)
+
+	}
+	api.usermapa[chatId].gender = gen
+	api.usermapa[chatId].Stage = 9
+	ms := fmt.Sprintf("Сведение данных:\nИмя: %s\nНомер: %s\nДеятельность:%s\nВозраст:12\nПол:%d\n", api.usermapa[chatId].name, api.usermapa[chatId].phone, api.usermapa[chatId].aim, api.usermapa[chatId].gender)
+	if api.usermapa[chatId].lang == "kazakh" {
+		msg.Text = ms
+	} else {
+		msg.Text = ms
 	}
 	api.bot.Send(msg)
 }
