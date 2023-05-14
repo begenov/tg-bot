@@ -3,15 +3,16 @@ package handlers
 import (
 	"log"
 
+	"github.com/begenov/tg-bot/internal/models"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
 func (api *TelegramAPI) Hello(message *tgbotapi.Message, chatId int64) {
-	msg := tgbotapi.NewMessage(message.Chat.ID, "Здравствуйте, это Telegram-bot по поиску работы и сотрудников.\nВыберите язык:")
+	msg := tgbotapi.NewMessage(chatId, models.InfoTelega)
 	inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(
 		tgbotapi.NewInlineKeyboardRow(
-			tgbotapi.NewInlineKeyboardButtonData("казахский", "kazakh"),
-			tgbotapi.NewInlineKeyboardButtonData("русский", "russian"),
+			tgbotapi.NewInlineKeyboardButtonData(models.Kazakh, models.Kazakh),
+			tgbotapi.NewInlineKeyboardButtonData(models.Russian, models.Russian),
 		),
 	)
 	msg.ReplyMarkup = inlineKeyboard

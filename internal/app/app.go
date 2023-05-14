@@ -1,6 +1,8 @@
 package app
 
 import (
+	"fmt"
+
 	"github.com/begenov/tg-bot/db"
 	"github.com/begenov/tg-bot/internal/config"
 	"github.com/begenov/tg-bot/internal/handlers"
@@ -12,14 +14,14 @@ import (
 func Run(cfg *config.Config) error {
 	bot, err := tgbotapi.NewBotAPI(cfg.TelegramAPI.Token)
 	if err != nil {
-		return err
+		return fmt.Errorf("incorrect new bot api: %v", err)
 	}
 
 	bot.Debug = true
 
 	db, err := db.NewDB(cfg.DB.Driver, cfg.DB.DSN)
 	if err != nil {
-		return err
+		return fmt.Errorf("incorrect new db: %v", err)
 	}
 
 	repository := repository.NewRepository(db)
