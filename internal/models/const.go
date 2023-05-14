@@ -19,6 +19,7 @@ const (
 	RussianEmployeeButton  = "ишу сотрудника"
 	RussianAgeButton       = "ввести возраст"
 	RussianAgeInfo         = "Осталось совсем немного до окончания регистрации. Введите, пожалуйста, свой возраст."
+	RussianGender          = "Укажите пол"
 )
 
 // Kazakh
@@ -35,4 +36,5 @@ const (
 	KazakhEmployeeButton  = "қызметкер іздеу"
 	KazakhAgeButton       = "жасын енгізіңіз"
 	KazakhAgeInfo         = "Тіркеу аяқталғанға дейін аз ғана уақыт қалды. Жасыңызды енгізіңіз."
+	KazakhGender          = "Жынысын көрсетіңіз"
 )

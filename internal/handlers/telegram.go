@@ -12,11 +12,13 @@ type TelegramAPI struct {
 }
 
 type User struct {
-	Stage int
-	lang  string
-	name  string
-	phone string
-	aim   string
+	Stage  int
+	lang   string
+	name   string
+	phone  string
+	aim    string
+	age    int
+	gender int
 }
 
 func NewTelegramAPI(bot *tgbotapi.BotAPI, servces *services.Service) *TelegramAPI {
@@ -32,8 +34,8 @@ func (api *TelegramAPI) StartTelegramAPI() error {
 
 	u.Timeout = 60
 	updates := api.bot.GetUpdatesChan(u)
-	for update := range updates {
 
+	for update := range updates {
 		chatId := update.FromChat().ID
 		msg := tgbotapi.NewMessage(chatId, "")
 
