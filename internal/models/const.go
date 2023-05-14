@@ -1,5 +1,11 @@
 package models
 
+// Info
+const (
+	InfoTelega = "Здравствуйте, это Telegram-bot по поиску работы и сотрудников.\nВыберите язык"
+)
+
+// Russian
 const (
 	Russian             = "russian"
 	ChoseRussian        = "Вы выбрали русский язык"
@@ -8,6 +14,7 @@ const (
 	RussianNumberButton = "Нөмірмен бөлісу"
 )
 
+// Kazakh
 const (
 	Kazakh             = "kazakh"
 	ChoseKazakh        = "сіз Қазақ тілің таңдадыңыз"

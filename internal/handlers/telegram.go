@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"github.com/begenov/tg-bot/internal/models"
 	"github.com/begenov/tg-bot/internal/services"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
@@ -45,36 +44,12 @@ func (api *TelegramAPI) StartTelegramAPI() error {
 		switch api.usermapa[chatId].Stage {
 		case 0:
 			if update.CallbackQuery != nil {
-				api.choseKazakh(update, msg, chatId)
+				api.choseKazakhHandler(update, msg, chatId)
 				continue
 			}
 		case 1:
 			if update.Message != nil {
-				name := update.Message.Text
-				api.usermapa[chatId].name = name
-				api.usermapa[chatId].Stage = 2
-
-				shareButton := tgbotapi.NewKeyboardButtonContact("")
-				msg2 := tgbotapi.NewMessage(chatId, "")
-
-				if api.usermapa[chatId].lang == models.Kazakh {
-					msg.Text = models.KazakhHello + name
-
-					shareButton.Text = models.KazakhNumberButton
-				} else {
-					msg.Text = models.RussianHello + name
-					shareButton.Text = models.RussianNumberButton
-
-				}
-
-				keyboard := tgbotapi.NewReplyKeyboard(
-					tgbotapi.NewKeyboardButtonRow(shareButton),
-				)
-
-				api.bot.Send(msg)
-
-				msg2.ReplyMarkup = keyboard
-				api.bot.Send(msg2)
+				api.nameHandler(update, chatId, msg)
 				continue
 			}
 		}
