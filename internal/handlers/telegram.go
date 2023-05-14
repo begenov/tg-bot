@@ -12,11 +12,12 @@ type TelegramAPI struct {
 }
 
 type User struct {
-	Stage int
-	lang  string
-	name  string
-	phone string
-	aim   string
+	Stage  int
+	lang   string
+	name   string
+	phone  string
+	aim    string
+	gender int
 }
 
 func NewTelegramAPI(bot *tgbotapi.BotAPI, servces *services.Service) *TelegramAPI {
