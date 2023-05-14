@@ -35,7 +35,6 @@ func (api *TelegramAPI) StartTelegramAPI() error {
 	for update := range updates {
 
 		chatId := update.FromChat().ID
-
 		msg := tgbotapi.NewMessage(chatId, "")
 
 		if _, exi := api.usermapa[chatId]; !exi {
@@ -71,15 +70,14 @@ func (api *TelegramAPI) StartTelegramAPI() error {
 				shareButton := tgbotapi.NewKeyboardButtonContact("")
 				msg2 := tgbotapi.NewMessage(chatId, "")
 
-				if api.usermapa[chatId].lang == "kazakh" {
-					msg.Text = "Сәлем" + name
+				if api.usermapa[chatId].lang == models.Kazakh {
+					msg.Text = models.KazakhHello + name
 
-					shareButton.Text = "Нөмірмен бөлісу"
-
-					msg2.Text = "Ботқа тіркелу үшін бізге телефон нөміріңіз қажет."
+					shareButton.Text = models.KazakhNumberButton
 				} else {
-					msg.Text = "Здравствуйте, " + name
-					shareButton.Text = "Для регистрации в боте нам нужен ваш номер телефона."
+					msg.Text = models.RussianHello + name
+					shareButton.Text = models.RussianNumberButton
+
 				}
 
 				keyboard := tgbotapi.NewReplyKeyboard(
