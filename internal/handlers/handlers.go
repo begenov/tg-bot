@@ -68,10 +68,10 @@ func (api *TelegramAPI) phoneNumberHandler1(update tgbotapi.Update, chatId int64
 	// log.Fatal(phoneNumber)
 	api.usermapa[chatId].phone = phoneNumber
 	api.usermapa[chatId].Stage = 4
-	if api.usermapa[chatId].lang == "kazakh" {
-		msg.Text = "Сізге коды бар SMS хабарлама келеді. Оны енгізіңіз."
+	if api.usermapa[chatId].lang == models.Kazakh {
+		msg.Text = models.KazakhNumberInfo
 	} else {
-		msg.Text = "Вы получите SMS-уведомление с кодом. Введите его, пожалуйста."
+		msg.Text = models.RussianNumberInfo
 	}
 	api.bot.Send(msg)
 }
@@ -80,10 +80,10 @@ func (api *TelegramAPI) phoneNumberHandler2(update tgbotapi.Update, chatId int64
 	phoneNumber := update.Message.Text
 	api.usermapa[chatId].phone = phoneNumber
 	api.usermapa[chatId].Stage = 4
-	if api.usermapa[chatId].lang == "kazakh" {
-		msg.Text = "Сізге коды бар SMS хабарлама келеді. Оны енгізіңіз."
-	} else {
-		msg.Text = "Вы получите SMS-уведомление с кодом. Введите его, пожалуйста."
+	if api.usermapa[chatId].lang == models.Kazakh {
+		msg.Text = models.KazakhNumberInfo
+	} else if api.usermapa[chatId].lang == models.Russian {
+		msg.Text = models.RussianNumberInfo
 	}
 	api.bot.Send(msg)
 }
@@ -93,23 +93,37 @@ func (api *TelegramAPI) phoneNumberHandler2(update tgbotapi.Update, chatId int64
 func (api *TelegramAPI) checkPhoneNumberHandler(update tgbotapi.Update, chatId int64, msg tgbotapi.MessageConfig) {
 	code := update.Message.Text
 	if code == "0000" {
-		if api.usermapa[chatId].lang == "kazakh" {
-			msg.Text = "Сізге коды бар SMS хабарлама келеді. Оны енгізіңіз."
+		if api.usermapa[chatId].lang == models.Kazakh {
+			msg.Text = models.KazakhNumberInfo
 		} else {
-			msg.Text = "Вы получите SMS-уведомление с кодом. Введите его, пожалуйста."
+			msg.Text = models.RussianNumberInfo
 		}
 		// api.usermapa[chatId].Stage = 5
 		// // api.bot.Send(msg)
 		// continue
 	}
-	msg.Text = "Ваш код получен, спасибо!"
-	api.bot.Send(msg)
 	msg1 := tgbotapi.NewMessage(chatId, "")
-	msg1.Text = fmt.Sprintf("%s, спасибо за регистрацию! Вы ищите работу или сотрудника?", api.usermapa[chatId].name)
+	work := ""
+	employee := ""
+	if api.usermapa[chatId].lang == models.Kazakh {
+		msg.Text = models.KazakhNumberRetrieved
+		searchText := fmt.Sprintf(models.KazakhSearch, api.usermapa[chatId].name)
+		msg1.Text = searchText
+		work = models.KazakhWorkButton
+		employee = models.KazakhEmployeeButton
+	} else if api.usermapa[chatId].lang == models.Russian {
+		msg.Text = models.RussianNumberRetrieved
+		searchText := fmt.Sprintf(models.RussianSearch, api.usermapa[chatId].name)
+		msg1.Text = searchText
+		work = models.RussianWorkButton
+		employee = models.RussianEmployeeButton
+	}
+
+	api.bot.Send(msg)
 	inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(
 		tgbotapi.NewInlineKeyboardRow(
-			tgbotapi.NewInlineKeyboardButtonData("ищу работу", "work"),
-			tgbotapi.NewInlineKeyboardButtonData("ищу сотрудника", "employee"),
+			tgbotapi.NewInlineKeyboardButtonData(work, "work"),
+			tgbotapi.NewInlineKeyboardButtonData(employee, "employee"),
 		),
 	)
 	msg1.ReplyMarkup = inlineKeyboard
