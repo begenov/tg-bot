@@ -29,7 +29,6 @@ func (api *TelegramAPI) StartTelegramAPI() error {
 	u := tgbotapi.NewUpdate(0)
 
 	u.Timeout = 60
-
 	updates := api.bot.GetUpdatesChan(u)
 	for update := range updates {
 
