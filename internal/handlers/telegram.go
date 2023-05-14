@@ -1,8 +1,6 @@
 package handlers
 
 import (
-	"log"
-
 	"github.com/begenov/tg-bot/internal/services"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
@@ -33,7 +31,9 @@ func (api *TelegramAPI) StartTelegramAPI() error {
 	u.Timeout = 60
 	updates := api.bot.GetUpdatesChan(u)
 	for update := range updates {
-
+		if update == (tgbotapi.Update{}) {
+			continue
+		}
 		chatId := update.FromChat().ID
 
 		msg := tgbotapi.NewMessage(chatId, "")
@@ -100,9 +100,8 @@ func (api *TelegramAPI) StartTelegramAPI() error {
 		case 2:
 			if update.Message.Contact != nil {
 				phoneNumber := update.Message.Contact.PhoneNumber
-				log.Fatal(phoneNumber)
 				api.usermapa[chatId].phone = phoneNumber
-				api.usermapa[chatId].Stage = 4
+				api.usermapa[chatId].Stage = 3
 				if api.usermapa[chatId].lang == "kazakh" {
 					msg.Text = "Сізге коды бар SMS хабарлама келеді. Оны енгізіңіз."
 				} else {
@@ -111,20 +110,23 @@ func (api *TelegramAPI) StartTelegramAPI() error {
 				api.bot.Send(msg)
 				continue
 			}
-		case 4:
+		case 3:
 			if update.Message != nil {
+
 				code := update.Message.Text
+				// log.Fatal(code != "0000")
 				if code != "0000" {
 					if api.usermapa[chatId].lang == "kazakh" {
 						msg.Text = "Сізге коды бар SMS хабарлама келеді. Оны енгізіңіз."
 					} else {
 						msg.Text = "Вы получите SMS-уведомление с кодом. Введите его, пожалуйста."
 					}
+					api.bot.Send(msg)
 					continue
 				}
 				api.usermapa[chatId].Stage = 4
-
 			}
+		case 4:
 
 		}
 	}

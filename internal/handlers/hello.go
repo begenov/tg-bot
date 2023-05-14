@@ -1,6 +1,8 @@
 package handlers
 
 import (
+	"log"
+
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
@@ -16,5 +18,7 @@ func (api *TelegramAPI) Hello(message *tgbotapi.Message, chatId int64) {
 
 	api.usermapa[chatId] = &User{Stage: 0}
 
-	api.bot.Send(msg)
+	if _, err := api.bot.Send(msg); err != nil {
+		log.Fatal()
+	}
 }
