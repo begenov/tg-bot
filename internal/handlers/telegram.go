@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"log"
+	"fmt"
 
 	"github.com/begenov/tg-bot/internal/services"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
@@ -13,7 +13,7 @@ type TelegramAPI struct {
 	usermapa map[int64]*User
 }
 type User struct {
-	stage int
+	Stage int
 	lang  string
 	name  string
 	phone string
@@ -43,13 +43,13 @@ func (api *TelegramAPI) StartTelegramAPI() error {
 			continue
 		}
 
-		user := *api.usermapa[chatId]
-		switch user.stage {
+		fmt.Println(api.usermapa[chatId], "oooooooooooooooooo")
+		switch api.usermapa[chatId].Stage {
 		case 0:
 			if update.CallbackQuery != nil {
 				lang := update.CallbackQuery.Data
-				user.lang = lang
-				user.stage++
+				api.usermapa[chatId].Stage = 1
+				fmt.Println(api.usermapa[chatId], "----------")
 
 				msg2 := tgbotapi.NewMessage(chatId, "")
 				if lang == "kazakh" {
@@ -67,15 +67,13 @@ func (api *TelegramAPI) StartTelegramAPI() error {
 		case 1:
 			if update.Message != nil {
 				name := update.Message.Text
-				user.name = name
-				user.stage++
+				api.usermapa[chatId].name = name
+				api.usermapa[chatId].Stage = 2
 
 				shareButton := tgbotapi.NewKeyboardButtonContact("")
 				msg2 := tgbotapi.NewMessage(chatId, "")
 
-				log.Fatal(name)
-
-				if user.lang == "kazakh" {
+				if api.usermapa[chatId].lang == "kazakh" {
 					msg.Text = "Сәлем" + name
 
 					shareButton.Text = "Нөмірмен бөлісу"
