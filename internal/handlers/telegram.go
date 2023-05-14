@@ -14,7 +14,6 @@ type TelegramAPI struct {
 }
 type User struct {
 	stage int
-	id    int64
 	lang  string
 	name  string
 	phone string
@@ -31,7 +30,7 @@ func NewTelegramAPI(bot *tgbotapi.BotAPI, servces *services.Service) *TelegramAP
 func (api *TelegramAPI) StartTelegramAPI() error {
 	u := tgbotapi.NewUpdate(0)
 
-	u.Timeout = 0
+	u.Timeout = 60
 	updates := api.bot.GetUpdatesChan(u)
 	for update := range updates {
 
@@ -45,9 +44,6 @@ func (api *TelegramAPI) StartTelegramAPI() error {
 		}
 
 		user := *api.usermapa[chatId]
-		if user.stage == 1 {
-			log.Fatal(user.id, "chat Id", chatId)
-		}
 		switch user.stage {
 		case 0:
 			if update.CallbackQuery != nil {
@@ -66,11 +62,9 @@ func (api *TelegramAPI) StartTelegramAPI() error {
 
 				api.bot.Send(msg)
 				api.bot.Send(msg2)
-
 				continue
 			}
 		case 1:
-
 			if update.Message != nil {
 				name := update.Message.Text
 				user.name = name
