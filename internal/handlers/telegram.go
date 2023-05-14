@@ -45,20 +45,7 @@ func (api *TelegramAPI) StartTelegramAPI() error {
 		switch api.usermapa[chatId].Stage {
 		case 0:
 			if update.CallbackQuery != nil {
-				lang := update.CallbackQuery.Data
-				api.usermapa[chatId].Stage = 1
-
-				msg2 := tgbotapi.NewMessage(chatId, "")
-				if lang == models.Kazakh {
-					msg.Text = models.ChoseKazakh
-					msg2.Text = models.KazakhName
-				} else if lang == models.Russian {
-					msg.Text = models.ChoseRussian
-					msg2.Text = models.RussianName
-				}
-
-				api.bot.Send(msg)
-				api.bot.Send(msg2)
+				api.choseKazakh(update, msg, chatId)
 				continue
 			}
 		case 1:
