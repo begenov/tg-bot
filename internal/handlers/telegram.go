@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"context"
-	"log"
 
 	"github.com/begenov/tg-bot/internal/models"
 	"github.com/begenov/tg-bot/internal/services"
@@ -30,20 +29,25 @@ func (api *TelegramAPI) StartTelegramAPI() error {
 	updates := api.bot.GetUpdatesChan(u)
 
 	for update := range updates {
-		chatId := update.FromChat().ID
-		user, err := api.services.User.UserByChatID(context.Background(), int(chatId))
-		log.Println(user, err, "------------------------------------------")
-		msg := tgbotapi.NewMessage(chatId, "")
+		if update.FromChat() != nil {
 
-		if user == (&models.User{}) {
-			if _, exi := api.usermapa[chatId]; !exi {
-				api.Hello(update.Message, chatId)
+			chatId := update.FromChat().ID
+			user, _ := api.services.User.UserByChatID(context.Background(), int(chatId))
+			msg := tgbotapi.NewMessage(chatId, "")
+
+			if user == nil {
+				if _, exi := api.usermapa[chatId]; !exi {
+					api.Hello(update.Message, chatId)
+					continue
+				}
+				api.profileUser(update, chatId, msg)
 				continue
 			}
-			api.profileUser(update, chatId, msg)
-			continue
+			if user.Aim == "" {
+				api.jobSeekersHandler()
+				continue
+			}
 		}
-
 	}
 
 	return nil

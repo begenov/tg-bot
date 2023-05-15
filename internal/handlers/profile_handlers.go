@@ -265,3 +265,18 @@ func (api *TelegramAPI) genderHandler(update tgbotapi.Update, chatId int64, msg 
 	}()
 	api.bot.Send(msg)
 }
+
+func (api *TelegramAPI) Hello(message *tgbotapi.Message, chatId int64) {
+	msg := tgbotapi.NewMessage(chatId, models.InfoTelega)
+	inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(
+		tgbotapi.NewInlineKeyboardRow(
+			tgbotapi.NewInlineKeyboardButtonData(models.Kazakh, models.Kazakh),
+			tgbotapi.NewInlineKeyboardButtonData(models.Russian, models.Russian),
+		),
+	)
+	msg.ReplyMarkup = inlineKeyboard
+
+	api.usermapa[chatId] = &models.User{Stage: 0}
+
+	api.bot.Send(msg)
+}
