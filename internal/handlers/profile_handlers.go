@@ -274,7 +274,9 @@ func (api *TelegramAPI) genderHandler(update tgbotapi.Update, chatId int64, msg 
 	}
 
 	api.usermapa[chatId].gender = gen
-	api.usermapa[chatId].Stage = 8
+	if api.usermapa[chatId].aim == 1 {
+		api.usermapa[chatId].Stage = 8
+	}
 
 	ms := fmt.Sprintf(info, api.usermapa[chatId].name, api.usermapa[chatId].phone, aim, api.usermapa[chatId].age, gender)
 	if api.usermapa[chatId].lang == models.Kazakh {
