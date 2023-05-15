@@ -57,9 +57,9 @@ func (api *TelegramAPI) profileUser(update tgbotapi.Update, chatId int64, msg tg
 			break
 		}
 	case 8:
-		//service
+		// service
 	default:
-		//error
+		// error
 	}
 }
 
@@ -142,8 +142,8 @@ func (api *TelegramAPI) checkPhoneNumberHandler(update tgbotapi.Update, chatId i
 	api.bot.Send(msg)
 	inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(
 		tgbotapi.NewInlineKeyboardRow(
-			tgbotapi.NewInlineKeyboardButtonData(work, "work"),
-			tgbotapi.NewInlineKeyboardButtonData(employee, "employee"),
+			tgbotapi.NewInlineKeyboardButtonData(work, "1"),
+			tgbotapi.NewInlineKeyboardButtonData(employee, "0"),
 		),
 	)
 	msg1.ReplyMarkup = inlineKeyboard
@@ -182,7 +182,12 @@ func (api *TelegramAPI) nameHandler(update tgbotapi.Update, chatId int64, msg tg
 }
 
 func (api *TelegramAPI) coverLetterHandler(update tgbotapi.Update, chatId int64, msg tgbotapi.MessageConfig) {
-	api.usermapa[chatId].aim = update.CallbackQuery.Data
+	userAim, err := strconv.Atoi(update.CallbackQuery.Data)
+	if err != nil {
+		log.Println("Error in Aim stage")
+		log.Fatal(err)
+	}
+	api.usermapa[chatId].aim = userAim
 	// api.usermapa[chatId].Stage = 8
 	// fmt.Println("--------------The aim is ", api.usermapa[chatId].aim)
 	age := ""
@@ -239,20 +244,39 @@ func (api *TelegramAPI) genderHandler(update tgbotapi.Update, chatId int64, msg 
 		log.Fatal(err)
 
 	}
-
+	gender := ""
 	info := ""
+	aim := ""
 	if api.usermapa[chatId].lang == models.Kazakh {
-
+		if gen == 1 {
+			gender = "Ер"
+		} else {
+			gender = "Әйел"
+		}
+		if api.usermapa[chatId].aim == 1 {
+			aim = "Жұмыс іздеу"
+		} else {
+			aim = "Қызметкерді іздеу"
+		}
 		info = models.InfoInKazakh
-
 	} else if api.usermapa[chatId].lang == models.Russian {
-
+		if gen == 1 {
+			gender = "Мужской"
+		} else {
+			gender = "Женский"
+		}
+		if api.usermapa[chatId].aim == 1 {
+			aim = "Поиск вакансий"
+		} else {
+			aim = "Поиск сотрудников"
+		}
 		info = models.InfoInRussian
 	}
 
 	api.usermapa[chatId].gender = gen
 	api.usermapa[chatId].Stage = 8
-	ms := fmt.Sprintf(info, api.usermapa[chatId].name, api.usermapa[chatId].phone, api.usermapa[chatId].aim, api.usermapa[chatId].age, api.usermapa[chatId].gender)
+
+	ms := fmt.Sprintf(info, api.usermapa[chatId].name, api.usermapa[chatId].phone, aim, api.usermapa[chatId].age, gender)
 	if api.usermapa[chatId].lang == models.Kazakh {
 		msg.Text = ms
 	} else if api.usermapa[chatId].lang == models.Russian {
