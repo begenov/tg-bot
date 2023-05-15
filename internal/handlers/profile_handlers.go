@@ -57,7 +57,10 @@ func (api *TelegramAPI) profileUser(update tgbotapi.Update, chatId int64, msg tg
 			break
 		}
 	case 8:
-		// service
+		if update.CallbackQuery != nil {
+			api.workFieldHandler(update, chatId, msg)
+			break
+		}
 	default:
 		// error
 	}
@@ -274,9 +277,6 @@ func (api *TelegramAPI) genderHandler(update tgbotapi.Update, chatId int64, msg 
 	}
 
 	api.usermapa[chatId].gender = gen
-	if api.usermapa[chatId].aim == 1 {
-		api.usermapa[chatId].Stage = 8
-	}
 
 	ms := fmt.Sprintf(info, api.usermapa[chatId].name, api.usermapa[chatId].phone, aim, api.usermapa[chatId].age, gender)
 	if api.usermapa[chatId].lang == models.Kazakh {
@@ -284,5 +284,31 @@ func (api *TelegramAPI) genderHandler(update tgbotapi.Update, chatId int64, msg 
 	} else if api.usermapa[chatId].lang == models.Russian {
 		msg.Text = ms
 	}
+	api.bot.Send(msg)
+	if api.usermapa[chatId].aim == 1 {
+		api.usermapa[chatId].Stage = 8
+		msg.Text = "В какой сфере вы бы хотели найти работу?"
+		inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(
+			tgbotapi.NewInlineKeyboardRow(
+				tgbotapi.NewInlineKeyboardButtonData("Торговля", "0"),
+				tgbotapi.NewInlineKeyboardButtonData("Общепит", "1"),
+				tgbotapi.NewInlineKeyboardButtonData("Другое", "2"),
+				tgbotapi.NewInlineKeyboardButtonData("Пропустить шаг", "3"),
+			),
+		)
+
+		msg.ReplyMarkup = inlineKeyboard
+		api.bot.Send(msg)
+	}
+}
+
+func (api *TelegramAPI) workFieldHandler(update tgbotapi.Update, chatId int64, msg tgbotapi.MessageConfig) {
+	workField, err := strconv.Atoi(update.CallbackQuery.Data)
+	if err != nil {
+		fmt.Println("WorkField handler error --------")
+		log.Fatal(err)
+	}
+	log.Println(workField, "------------------------------------------")
+	msg.Text = "Дальше будеь выбор профессиии, пока в разработке"
 	api.bot.Send(msg)
 }
