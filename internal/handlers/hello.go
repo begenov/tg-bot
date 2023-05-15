@@ -15,7 +15,7 @@ func (api *TelegramAPI) Hello(message *tgbotapi.Message, chatId int64) {
 	)
 	msg.ReplyMarkup = inlineKeyboard
 
-	api.usermapa[chatId] = &User{Stage: 0}
+	api.usermapa[chatId] = &models.User{Stage: 0}
 
 	api.bot.Send(msg)
 }
