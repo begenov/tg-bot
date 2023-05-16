@@ -59,7 +59,6 @@ func (api *TelegramAPI) profileUser(update tgbotapi.Update, chatId int64, msg tg
 		}
 	case 8:
 	default:
-		// error
 	}
 }
 
@@ -108,8 +107,6 @@ func (api *TelegramAPI) phoneNumberHandler2(update tgbotapi.Update, chatId int64
 	api.bot.Send(msg)
 }
 
-// Share Name
-
 func (api *TelegramAPI) checkPhoneNumberHandler(update tgbotapi.Update, chatId int64, msg tgbotapi.MessageConfig) {
 	code := update.Message.Text
 	if code == "0000" {
@@ -118,9 +115,6 @@ func (api *TelegramAPI) checkPhoneNumberHandler(update tgbotapi.Update, chatId i
 		} else {
 			msg.Text = models.RussianNumberInfo
 		}
-		// api.usermapa[chatId].Stage = 5
-		// // api.bot.Send(msg)
-		// continue
 	}
 	msg1 := tgbotapi.NewMessage(chatId, "")
 	work := ""
@@ -234,11 +228,9 @@ func (api *TelegramAPI) ageUserHandler(update tgbotapi.Update, chatId int64, msg
 func (api *TelegramAPI) genderHandler(update tgbotapi.Update, chatId int64, msg tgbotapi.MessageConfig) {
 	gen, err := strconv.Atoi(update.CallbackQuery.Data)
 	if err != nil {
-		fmt.Println("gender handler error --------")
 		log.Fatal(err)
 
 	}
-	// gender := ""
 	info := ""
 	if api.usermapa[chatId].Lang == models.Kazakh {
 
