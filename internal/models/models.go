@@ -21,3 +21,15 @@ type BotMessage struct {
 	ChatID int    `json:"chat_id"`
 	Text   string `json:"text"`
 }
+
+type User struct {
+	ID     int
+	ChatID int
+	Stage  int
+	Lang   string
+	Name   string
+	Phone  string
+	Aim    string
+	Age    int
+	Gender int
+}
