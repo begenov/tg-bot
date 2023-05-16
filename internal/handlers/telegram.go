@@ -1,6 +1,9 @@
 package handlers
 
 import (
+	"context"
+
+	"github.com/begenov/tg-bot/internal/models"
 	"github.com/begenov/tg-bot/internal/services"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
@@ -8,24 +11,14 @@ import (
 type TelegramAPI struct {
 	bot      *tgbotapi.BotAPI
 	services *services.Service
-	usermapa map[int64]*User
-}
-
-type User struct {
-	Stage  int
-	lang   string
-	name   string
-	phone  string
-	aim    int
-	age    int
-	gender int
+	usermapa map[int64]*models.User
 }
 
 func NewTelegramAPI(bot *tgbotapi.BotAPI, servces *services.Service) *TelegramAPI {
 	return &TelegramAPI{
 		bot:      bot,
 		services: servces,
-		usermapa: make(map[int64]*User),
+		usermapa: make(map[int64]*models.User),
 	}
 }
 
@@ -36,16 +29,25 @@ func (api *TelegramAPI) StartTelegramAPI() error {
 	updates := api.bot.GetUpdatesChan(u)
 
 	for update := range updates {
-		chatId := update.FromChat().ID
-		msg := tgbotapi.NewMessage(chatId, "")
+		if update.FromChat() != nil {
 
-		if _, exi := api.usermapa[chatId]; !exi {
-			api.Hello(update.Message, chatId)
-			continue
+			chatId := update.FromChat().ID
+			user, _ := api.services.User.UserByChatID(context.Background(), int(chatId))
+			msg := tgbotapi.NewMessage(chatId, "")
+
+			if user == nil {
+				if _, exi := api.usermapa[chatId]; !exi {
+					api.Hello(update.Message, chatId)
+					continue
+				}
+				api.profileUser(update, chatId, msg)
+				continue
+			}
+			if user.Aim == "" {
+				api.jobSeekersHandler()
+				continue
+			}
 		}
-
-		api.profileUser(update, chatId, msg)
-
 	}
 
 	return nil
