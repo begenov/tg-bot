@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/begenov/tg-bot/internal/models"
 	"github.com/begenov/tg-bot/internal/services"
@@ -27,11 +28,11 @@ func (api *TelegramAPI) StartTelegramAPI() error {
 
 	u.Timeout = 60
 	updates := api.bot.GetUpdatesChan(u)
-
 	for update := range updates {
 		if update.FromChat() != nil {
 
 			chatId := update.FromChat().ID
+			fmt.Printf("api.usermapa[chatId]: %v\n", api.usermapa[chatId])
 			user, _ := api.services.User.UserByChatID(context.Background(), int(chatId))
 			msg := tgbotapi.NewMessage(chatId, "")
 
@@ -43,8 +44,8 @@ func (api *TelegramAPI) StartTelegramAPI() error {
 				api.profileUser(update, chatId, msg)
 				continue
 			}
-			if user.Aim == "" {
-				api.jobSeekersHandler()
+			if user.Aim == 1 {
+				api.jobSeekersHandler(update, *user, msg)
 				continue
 			}
 		}
