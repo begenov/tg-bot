@@ -32,6 +32,7 @@ func (api *TelegramAPI) StartTelegramAPI() error {
 		if update.FromChat() != nil {
 
 			chatId := update.FromChat().ID
+
 			fmt.Printf("api.usermapa[chatId]: %v\n", api.usermapa[chatId])
 			user, _ := api.services.User.UserByChatID(context.Background(), int(chatId))
 			msg := tgbotapi.NewMessage(chatId, "")
@@ -44,8 +45,11 @@ func (api *TelegramAPI) StartTelegramAPI() error {
 				api.profileUser(update, chatId, msg)
 				continue
 			}
-			if user.Aim == 1 {
-				api.jobSeekersHandler(update, *user, msg)
+			if _, exi := api.usermapa[chatId]; !exi {
+				api.usermapa[chatId] = user
+			}
+			if api.usermapa[chatId].Aim == 1 {
+				api.jobSeekersHandler(update, msg, chatId)
 				continue
 			}
 		}

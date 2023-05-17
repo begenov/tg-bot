@@ -46,3 +46,15 @@ const (
 	KazakhGenderMale       = "Ер адам"
 	KazakhGenderFemale     = "Әйел"
 )
+
+var Fields = []string{"Торговля", "Общепит", "Строительство"}
+
+var Field = make(map[int][]string)
+
+func init() {
+	Field[0] = []string{"Продавец-консультант", "Менеджер по продажам", "Мерчандайзер", "Кассир"}
+
+	Field[1] = []string{"Повар", "Бариста", "Официант", "Бармен"}
+
+	Field[2] = []string{"Строитель", "Архитектор", "Архитектор", "Сварщик"}
+}

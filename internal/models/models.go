@@ -33,4 +33,10 @@ type User struct {
 	Aim    int
 	Age    int
 	Gender int
+
+	///
+	Field   string
+	FieldId int
+	Job     string
+	JobId   int
 }

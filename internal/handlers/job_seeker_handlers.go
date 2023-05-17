@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"fmt"
 	"log"
 	"strconv"
 
@@ -9,8 +8,8 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
-func (api *TelegramAPI) jobSeekersHandler(update tgbotapi.Update, user models.User, msg tgbotapi.MessageConfig) {
-	switch user.Stage {
+func (api *TelegramAPI) jobSeekersHandler(update tgbotapi.Update, msg tgbotapi.MessageConfig, chatId int64) {
+	switch api.usermapa[chatId].Stage {
 	case 0:
 
 		// api.usermapa[chatId].Stage = 8
@@ -26,10 +25,15 @@ func (api *TelegramAPI) jobSeekersHandler(update tgbotapi.Update, user models.Us
 
 		msg.ReplyMarkup = inlineKeyboard
 		api.bot.Send(msg)
+		api.usermapa[chatId].Stage = 1
 
 	case 1:
 		if update.CallbackQuery != nil {
-			api.workFieldHandler(update, int64(user.ChatID), msg)
+			api.workFieldHandler(update, chatId, msg)
+		}
+	case 2:
+		if update.CallbackQuery != nil {
+			api.jobHandler(update, chatId, msg)
 		}
 	default:
 		log.Println("-----------------------")
@@ -39,13 +43,29 @@ func (api *TelegramAPI) jobSeekersHandler(update tgbotapi.Update, user models.Us
 }
 
 func (api *TelegramAPI) workFieldHandler(update tgbotapi.Update, chatId int64, msg tgbotapi.MessageConfig) {
-	workField, err := strconv.Atoi(update.CallbackQuery.Data)
-	if err != nil {
-		fmt.Println("WorkField handler error --------")
-		log.Fatal(err)
+	workField, _ := strconv.Atoi(update.CallbackQuery.Data)
+	if workField == 2 {
+		api.usermapa[chatId].Stage = 6
+		return
+	} else if workField == 3 {
+		api.usermapa[chatId].Stage = 2
+		return
 	}
-	api.usermapa[chatId].Stage = 2
-	log.Println(workField, "------------------------------------------")
-	msg.Text = "Дальше будеь выбор профессиии, пока в разработке"
+	msg.Text = "На какой работе хотите работать"
+
+	Jobs := models.Field[workField]
+	keyboard := tgbotapi.NewInlineKeyboardRow()
+	for _, job := range Jobs {
+		button := tgbotapi.NewInlineKeyboardButtonData(job, job)
+		keyboard = append(keyboard, button)
+	}
+	inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(keyboard)
+	msg.ReplyMarkup = inlineKeyboard
 	api.bot.Send(msg)
+	api.usermapa[chatId].Stage = 2
+}
+
+func (api *TelegramAPI) jobHandler(update tgbotapi.Update, chatId int64, msg tgbotapi.MessageConfig) {
+	job := update.CallbackQuery.Data
+	log.Fatal(job)
 }
