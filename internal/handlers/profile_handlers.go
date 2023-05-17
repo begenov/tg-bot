@@ -55,6 +55,7 @@ func (api *TelegramAPI) profileUser(update tgbotapi.Update, chatId int64, msg tg
 
 		if update.CallbackQuery != nil {
 			api.genderHandler(update, chatId, msg)
+			api.usermapa[chatId].Stage = 0
 			break
 		}
 
