@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"log"
 	"strconv"
 
@@ -25,6 +26,10 @@ func (api *TelegramAPI) jobSeekersHandler(update tgbotapi.Update, msg tgbotapi.M
 	case 4:
 		if update.CallbackQuery != nil {
 			api.salaryHandler(update, chatId, msg)
+		}
+	case 5:
+		if update.CallbackQuery != nil {
+			api.jobFinder(update, chatId, msg)
 		}
 	default:
 		log.Println("-----------------------")
@@ -98,8 +103,18 @@ func (api *TelegramAPI) salaryHandler(update tgbotapi.Update, chatId int64, msg 
 	)
 	msg.ReplyMarkup = inlineKeyboard
 	api.bot.Send(msg)
-	api.usermapa[chatId].Stage = 4
+	api.usermapa[chatId].Stage = 5
 }
 
 func (api *TelegramAPI) jobFinder(update tgbotapi.Update, chatId int64, msg tgbotapi.MessageConfig) {
+	answer, err := strconv.Atoi(update.CallbackQuery.Data)
+	if err != nil {
+		log.Fatal(err)
+	}
+	if answer == 0 {
+		return
+	}
+	message := fmt.Sprintf("По вашему запросу: «%s – %s – %s тг.» найдено __ вакансий", api.usermapa[chatId].Field, api.usermapa[chatId].Job, api.usermapa[chatId].Salary)
+	msg.Text = message
+	api.bot.Send(msg)
 }
