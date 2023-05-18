@@ -41,3 +41,10 @@ type User struct {
 	JobId   int
 	Salary  string
 }
+
+type JobSeeker struct {
+	ID         int
+	Sphere     string
+	Profession string
+	Salary     string
+}

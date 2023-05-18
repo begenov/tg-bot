@@ -12,12 +12,19 @@ type UserIR interface {
 	UserByChatID(ctx context.Context, chatID int) (*models.User, error)
 }
 
+type JobSeeker interface {
+	JobSeekerByChatID(ctx context.Context, chatID int) (*models.JobSeeker, error)
+	CreateJobSeeker(ctx context.Context, job models.JobSeeker) error
+}
+
 type Repository struct {
-	User ProfileRepository
+	User      UserIR
+	JobSeeker JobSeeker
 }
 
 func NewRepository(db *sql.DB) *Repository {
 	return &Repository{
-		*NewProfileRepository(db),
+		User:      NewProfileRepository(db),
+		JobSeeker: NewJobSeekerRepo(db),
 	}
 }
