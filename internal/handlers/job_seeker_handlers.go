@@ -10,23 +10,6 @@ import (
 
 func (api *TelegramAPI) jobSeekersHandler(update tgbotapi.Update, msg tgbotapi.MessageConfig, chatId int64) {
 	switch api.usermapa[chatId].Stage {
-	case 0:
-
-		// api.usermapa[chatId].Stage = 8
-		msg.Text = "В какой сфере вы бы хотели найти работу?"
-		inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(
-			tgbotapi.NewInlineKeyboardRow(
-				tgbotapi.NewInlineKeyboardButtonData("Торговля", "0"),
-				tgbotapi.NewInlineKeyboardButtonData("Общепит", "1"),
-				tgbotapi.NewInlineKeyboardButtonData("Другое", "2"),
-				tgbotapi.NewInlineKeyboardButtonData("Пропустить шаг", "3"),
-			),
-		)
-
-		msg.ReplyMarkup = inlineKeyboard
-		api.bot.Send(msg)
-		api.usermapa[chatId].Stage = 1
-
 	case 1:
 		if update.CallbackQuery != nil {
 			api.workFieldHandler(update, chatId, msg)
