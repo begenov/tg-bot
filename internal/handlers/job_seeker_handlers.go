@@ -1,6 +1,8 @@
 package handlers
 
 import (
+	"fmt"
+	"log"
 	"strconv"
 
 	"github.com/begenov/tg-bot/internal/models"
@@ -26,9 +28,9 @@ func (api *TelegramAPI) jobSeekersHandler(update tgbotapi.Update, msg tgbotapi.M
 			api.salaryHandler(update, chatId, msg)
 		}
 	case 5:
-		api.anotherJob(update, chatId, msg)
-	case 6:
-
+		if update.CallbackQuery != nil {
+			api.jobFinder(update, chatId, msg)
+		}
 	default:
 		msg.Text = "В какой сфере вы бы хотели найти работу?"
 		inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(
@@ -119,10 +121,20 @@ func (api *TelegramAPI) salaryHandler(update tgbotapi.Update, chatId int64, msg 
 	)
 	msg.ReplyMarkup = inlineKeyboard
 	api.bot.Send(msg)
-	api.usermapa[chatId].Stage = 4
+	api.usermapa[chatId].Stage = 5
 }
 
 func (api *TelegramAPI) jobFinder(update tgbotapi.Update, chatId int64, msg tgbotapi.MessageConfig) {
+	answer, err := strconv.Atoi(update.CallbackQuery.Data)
+	if err != nil {
+		log.Fatal(err)
+	}
+	if answer == 0 {
+		return
+	}
+	message := fmt.Sprintf("По вашему запросу: «%s – %s – %s тг.» найдено __ вакансий", api.usermapa[chatId].Field, api.usermapa[chatId].Job, api.usermapa[chatId].Salary)
+	msg.Text = message
+	api.bot.Send(msg)
 }
 
 func (api *TelegramAPI) anotherJob(update tgbotapi.Update, chatId int64, msg tgbotapi.MessageConfig) {
