@@ -39,4 +39,5 @@ type User struct {
 	FieldId int
 	Job     string
 	JobId   int
+	Salary  string
 }
