@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"strconv"
@@ -103,6 +104,7 @@ func (api *TelegramAPI) jobHandler(update tgbotapi.Update, chatId int64, msg tgb
 
 	msg.ReplyMarkup = inlineKeyboard
 	api.bot.Send(msg)
+
 	api.usermapa[chatId].Stage = 3
 
 	// log.Fatal(job)
@@ -111,7 +113,14 @@ func (api *TelegramAPI) jobHandler(update tgbotapi.Update, chatId int64, msg tgb
 func (api *TelegramAPI) salaryHandler(update tgbotapi.Update, chatId int64, msg tgbotapi.MessageConfig) {
 	salary := update.CallbackQuery.Data
 	api.usermapa[chatId].Salary = salary
-
+	if err := api.services.JobSeeker.CreateJobSeeker(context.Background(), models.JobSeeker{
+		Sphere:     api.usermapa[chatId].Field,
+		Profession: api.usermapa[chatId].Job,
+		ChatID:     int(chatId),
+		Salary:     api.usermapa[chatId].Salary,
+	}); err != nil {
+		log.Fatalln(err)
+	}
 	msg.Text = "Начать поиск подходящих вакансий?"
 	inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(
 		tgbotapi.NewInlineKeyboardRow(
@@ -140,5 +149,4 @@ func (api *TelegramAPI) jobFinder(update tgbotapi.Update, chatId int64, msg tgbo
 func (api *TelegramAPI) anotherJob(update tgbotapi.Update, chatId int64, msg tgbotapi.MessageConfig) {
 	api.usermapa[chatId].Field = msg.Text
 	api.usermapa[chatId].Stage = 2
-
 }

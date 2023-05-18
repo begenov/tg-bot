@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS user_profile (
 
 
 CREATE TABLE IF NOT EXISTS job_seeker (
-		id INT AUTO_INCREMENT PRIMARY KEY,
+		id INTEGER PRIMARY KEY,
     user_profile_id INT,
 		sphere TEXT,
 		profession TEXT,

@@ -17,10 +17,10 @@ func NewJobSeekerService(repo repository.JobSeeker) *JobSeekerService {
 	}
 }
 
-func (services *JobSeekerService) CreateJobSeeker(ctx context.Context, job models.JobSeeker) *JobSeekerService {
-	return nil
+func (services *JobSeekerService) CreateJobSeeker(ctx context.Context, job models.JobSeeker) error {
+	return services.repo.CreateJobSeeker(ctx, job)
 }
 
 func (services *JobSeekerService) JobSeekerByChatID(ctx context.Context, chatID int) (*models.JobSeeker, error) {
-	return nil, nil
+	return services.repo.JobSeekerByChatID(ctx, chatID)
 }

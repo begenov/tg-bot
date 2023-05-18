@@ -44,6 +44,7 @@ type User struct {
 
 type JobSeeker struct {
 	ID         int
+	ChatID     int
 	Sphere     string
 	Profession string
 	Salary     string

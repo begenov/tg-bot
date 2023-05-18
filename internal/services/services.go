@@ -13,7 +13,7 @@ type UserServiceIR interface {
 }
 
 type JobSeeker interface {
-	CreateJobSeeker(ctx context.Context, job models.JobSeeker) *JobSeekerService
+	CreateJobSeeker(ctx context.Context, job models.JobSeeker) error
 	JobSeekerByChatID(ctx context.Context, chatID int) (*models.JobSeeker, error)
 }
 
