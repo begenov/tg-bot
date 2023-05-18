@@ -18,6 +18,14 @@ func (api *TelegramAPI) jobSeekersHandler(update tgbotapi.Update, msg tgbotapi.M
 		if update.CallbackQuery != nil {
 			api.jobHandler(update, chatId, msg)
 		}
+	case 3:
+		if update.CallbackQuery != nil {
+			api.salaryHandler(update, chatId, msg)
+		}
+	case 4:
+		if update.CallbackQuery != nil {
+			api.salaryHandler(update, chatId, msg)
+		}
 	default:
 		log.Println("-----------------------")
 	}
@@ -35,6 +43,11 @@ func (api *TelegramAPI) workFieldHandler(update tgbotapi.Update, chatId int64, m
 		return
 	}
 	api.usermapa[chatId].FieldId = workField
+	if workField >= 0 && workField <= 2 {
+		api.usermapa[chatId].Field = models.Fields[workField]
+	} else {
+		api.usermapa[chatId].Field = "Нужно указать! (Другое или что-нибудь еще)"
+	}
 	msg.Text = "Кем бы вы хотели работать?"
 
 	Jobs := models.Field[workField]
@@ -56,17 +69,37 @@ func (api *TelegramAPI) jobHandler(update tgbotapi.Update, chatId int64, msg tgb
 	msg.Text = "Какую зарплату вы хотели бы получить?"
 	inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(
 		tgbotapi.NewInlineKeyboardRow(
-			tgbotapi.NewInlineKeyboardButtonData("50,000 - 150,000", "1"),
-			tgbotapi.NewInlineKeyboardButtonData("150,000 - 250,000", "2"),
-			tgbotapi.NewInlineKeyboardButtonData("250,000 - 350,000", "3"),
-			tgbotapi.NewInlineKeyboardButtonData("350,000 - 500,000", "4"),
-			tgbotapi.NewInlineKeyboardButtonData("500,000 - 700,000", "5"),
-			tgbotapi.NewInlineKeyboardButtonData("700,000 < ", "6"),
+			tgbotapi.NewInlineKeyboardButtonData("50,000 - 150,000", "50,000 - 150,000"),
+			tgbotapi.NewInlineKeyboardButtonData("150,000 - 250,000", "150,000 - 250,000"),
+			tgbotapi.NewInlineKeyboardButtonData("250,000 - 350,000", "250,000 - 350,000"),
+			tgbotapi.NewInlineKeyboardButtonData("350,000 - 500,000", "350,000 - 500,000"),
+			tgbotapi.NewInlineKeyboardButtonData("500,000 - 700,000", "500,000 - 700,000"),
+			tgbotapi.NewInlineKeyboardButtonData("700,000 < ", "700,000 < "),
 		),
 	)
 
 	msg.ReplyMarkup = inlineKeyboard
 	api.bot.Send(msg)
 	api.usermapa[chatId].Stage = 3
+
 	// log.Fatal(job)
+}
+
+func (api *TelegramAPI) salaryHandler(update tgbotapi.Update, chatId int64, msg tgbotapi.MessageConfig) {
+	salary := update.CallbackQuery.Data
+	api.usermapa[chatId].Salary = salary
+
+	msg.Text = "Начать поиск подходящих вакансий?"
+	inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(
+		tgbotapi.NewInlineKeyboardRow(
+			tgbotapi.NewInlineKeyboardButtonData("ДА", "1"),
+			tgbotapi.NewInlineKeyboardButtonData("НЕТ", "0"),
+		),
+	)
+	msg.ReplyMarkup = inlineKeyboard
+	api.bot.Send(msg)
+	api.usermapa[chatId].Stage = 4
+}
+
+func (api *TelegramAPI) jobFinder(update tgbotapi.Update, chatId int64, msg tgbotapi.MessageConfig) {
 }
