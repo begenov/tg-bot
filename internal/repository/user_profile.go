@@ -18,7 +18,6 @@ func NewProfileRepository(db *sql.DB) *ProfileRepository {
 func (r *ProfileRepository) Create(ctx context.Context, user models.User) error {
 	stmt := `INSERT INTO user_profile (chat_id, name, phone, language, role, age, gender) VALUES ($1, $2, $3, $4, $5, $6, $7)`
 	_, err := r.db.ExecContext(ctx, stmt, user.ChatID, user.Name, user.Phone, user.Lang, user.Aim, user.Age, user.Gender)
-
 	if err != nil {
 		return err
 	}
@@ -31,7 +30,6 @@ func (r *ProfileRepository) UserByChatID(ctx context.Context, chatID int) (*mode
 
 	var user models.User
 	err := r.db.QueryRowContext(ctx, stmt, chatID).Scan(&user.ID, &user.ChatID, &user.Name, &user.Phone, &user.Lang, &user.Aim, &user.Age, &user.Gender)
-
 	if err != nil {
 		return nil, err
 	}
