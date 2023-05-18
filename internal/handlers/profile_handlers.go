@@ -229,15 +229,11 @@ func (api *TelegramAPI) genderHandler(update tgbotapi.Update, chatId int64, msg 
 	gen, err := strconv.Atoi(update.CallbackQuery.Data)
 	if err != nil {
 		log.Fatal(err)
-
 	}
 	info := ""
 	if api.usermapa[chatId].Lang == models.Kazakh {
-
 		info = models.InfoInKazakh
-
 	} else if api.usermapa[chatId].Lang == models.Russian {
-
 		info = models.InfoInRussian
 	}
 
