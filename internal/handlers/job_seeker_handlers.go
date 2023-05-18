@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"log"
 	"strconv"
 
 	"github.com/begenov/tg-bot/internal/models"
@@ -18,22 +17,45 @@ func (api *TelegramAPI) jobSeekersHandler(update tgbotapi.Update, msg tgbotapi.M
 		if update.CallbackQuery != nil {
 			api.jobHandler(update, chatId, msg)
 		}
+	case 10:
+		api.anotherArea(update, chatId, msg)
 	default:
-		log.Println("-----------------------")
-	}
+		msg.Text = "В какой сфере вы бы хотели найти работу?"
+		inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(
+			tgbotapi.NewInlineKeyboardRow(
+				tgbotapi.NewInlineKeyboardButtonData("Торговля", "1"),
+				tgbotapi.NewInlineKeyboardButtonData("Общепит", "2"),
+				tgbotapi.NewInlineKeyboardButtonData("Другое", "3"),
+				tgbotapi.NewInlineKeyboardButtonData("Пропустить шаг", "4"),
+			),
+		)
 
+		msg.ReplyMarkup = inlineKeyboard
+		api.bot.Send(msg)
+		api.usermapa[chatId].Stage = 1
+	}
 	// api.workFieldHandler(update, chatId, msg)
 }
 
 func (api *TelegramAPI) workFieldHandler(update tgbotapi.Update, chatId int64, msg tgbotapi.MessageConfig) {
 	workField, _ := strconv.Atoi(update.CallbackQuery.Data)
-	if workField == 2 {
-		api.usermapa[chatId].Stage = 6
+
+	switch workField {
+	case 1:
+		api.usermapa[chatId].Stage = 3
+	case 2:
+		api.usermapa[chatId].Stage = 3
+	case 3:
+		msg.Text = "Напиши сферу"
+
+		api.bot.Send(msg)
+		api.usermapa[chatId].Stage = 10
 		return
-	} else if workField == 3 {
-		api.usermapa[chatId].Stage = 2
-		return
+	case 4:
+		api.usermapa[chatId].Stage = 3
+
 	}
+
 	msg.Text = "На какой работе хотите работать"
 
 	Jobs := models.Field[workField]
@@ -49,6 +71,8 @@ func (api *TelegramAPI) workFieldHandler(update tgbotapi.Update, chatId int64, m
 }
 
 func (api *TelegramAPI) jobHandler(update tgbotapi.Update, chatId int64, msg tgbotapi.MessageConfig) {
-	job := update.CallbackQuery.Data
-	log.Fatal(job)
+}
+
+func (api *TelegramAPI) anotherArea(update tgbotapi.Update, chatId int64, msg tgbotapi.MessageConfig) {
+	api.usermapa[chatId].Field = msg.Text
 }

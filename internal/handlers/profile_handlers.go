@@ -301,10 +301,10 @@ func (api *TelegramAPI) nextRegistration(update tgbotapi.Update, chatId int64, m
 	msg.Text = "В какой сфере вы бы хотели найти работу?"
 	inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(
 		tgbotapi.NewInlineKeyboardRow(
-			tgbotapi.NewInlineKeyboardButtonData("Торговля", "0"),
-			tgbotapi.NewInlineKeyboardButtonData("Общепит", "1"),
-			tgbotapi.NewInlineKeyboardButtonData("Другое", "2"),
-			tgbotapi.NewInlineKeyboardButtonData("Пропустить шаг", "3"),
+			tgbotapi.NewInlineKeyboardButtonData("Торговля", "1"),
+			tgbotapi.NewInlineKeyboardButtonData("Общепит", "2"),
+			tgbotapi.NewInlineKeyboardButtonData("Другое", "3"),
+			tgbotapi.NewInlineKeyboardButtonData("Пропустить шаг", "4"),
 		),
 	)
 
