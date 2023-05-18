@@ -34,7 +34,8 @@ func (api *TelegramAPI) workFieldHandler(update tgbotapi.Update, chatId int64, m
 		api.usermapa[chatId].Stage = 2
 		return
 	}
-	msg.Text = "На какой работе хотите работать"
+	api.usermapa[chatId].FieldId = workField
+	msg.Text = "Кем бы вы хотели работать?"
 
 	Jobs := models.Field[workField]
 	keyboard := tgbotapi.NewInlineKeyboardRow()
@@ -50,5 +51,22 @@ func (api *TelegramAPI) workFieldHandler(update tgbotapi.Update, chatId int64, m
 
 func (api *TelegramAPI) jobHandler(update tgbotapi.Update, chatId int64, msg tgbotapi.MessageConfig) {
 	job := update.CallbackQuery.Data
-	log.Fatal(job)
+	api.usermapa[chatId].Job = job
+
+	msg.Text = "Какую зарплату вы хотели бы получить?"
+	inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(
+		tgbotapi.NewInlineKeyboardRow(
+			tgbotapi.NewInlineKeyboardButtonData("50,000 - 150,000", "1"),
+			tgbotapi.NewInlineKeyboardButtonData("150,000 - 250,000", "2"),
+			tgbotapi.NewInlineKeyboardButtonData("250,000 - 350,000", "3"),
+			tgbotapi.NewInlineKeyboardButtonData("350,000 - 500,000", "4"),
+			tgbotapi.NewInlineKeyboardButtonData("500,000 - 700,000", "5"),
+			tgbotapi.NewInlineKeyboardButtonData("700,000 < ", "6"),
+		),
+	)
+
+	msg.ReplyMarkup = inlineKeyboard
+	api.bot.Send(msg)
+	api.usermapa[chatId].Stage = 3
+	// log.Fatal(job)
 }
