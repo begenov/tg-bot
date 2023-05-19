@@ -11,8 +11,6 @@ import (
 func (api *TelegramAPI) jobSeekersHandler(update tgbotapi.Update, msg tgbotapi.MessageConfig, chatId int64) {
 	switch api.usermapa[chatId].Stage {
 	case 0:
-
-		// api.usermapa[chatId].Stage = 8
 		msg.Text = "В какой сфере вы бы хотели найти работу?"
 		inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(
 			tgbotapi.NewInlineKeyboardRow(
@@ -26,20 +24,22 @@ func (api *TelegramAPI) jobSeekersHandler(update tgbotapi.Update, msg tgbotapi.M
 		msg.ReplyMarkup = inlineKeyboard
 		api.bot.Send(msg)
 		api.usermapa[chatId].Stage = 1
-
 	case 1:
 		if update.CallbackQuery != nil {
 			api.workFieldHandler(update, chatId, msg)
 		}
 	case 2:
 		if update.CallbackQuery != nil {
-			api.jobHandler(update, chatId, msg)
+			//
+		}
+	case 6:
+		if update.CallbackQuery != nil {
+			api.ahotherJobHandler(update, chatId, msg)
 		}
 	default:
 		log.Println("-----------------------")
 	}
 
-	// api.workFieldHandler(update, chatId, msg)
 }
 
 func (api *TelegramAPI) workFieldHandler(update tgbotapi.Update, chatId int64, msg tgbotapi.MessageConfig) {
@@ -65,7 +65,7 @@ func (api *TelegramAPI) workFieldHandler(update tgbotapi.Update, chatId int64, m
 	api.usermapa[chatId].Stage = 2
 }
 
-func (api *TelegramAPI) jobHandler(update tgbotapi.Update, chatId int64, msg tgbotapi.MessageConfig) {
-	job := update.CallbackQuery.Data
-	log.Fatal(job)
+func (api *TelegramAPI) ahotherJobHandler(update tgbotapi.Update, chatId int64, msg tgbotapi.MessageConfig) {
+	msg.Text = "напишите сферу"
+	api.bot.Send(msg)
 }

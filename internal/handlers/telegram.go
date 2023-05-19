@@ -45,10 +45,13 @@ func (api *TelegramAPI) StartTelegramAPI() error {
 				api.profileUser(update, chatId, msg)
 				continue
 			}
+
 			if _, exi := api.usermapa[chatId]; !exi {
 				api.usermapa[chatId] = user
 			}
+
 			if api.usermapa[chatId].Aim == 1 {
+
 				api.jobSeekersHandler(update, msg, chatId)
 				continue
 			}

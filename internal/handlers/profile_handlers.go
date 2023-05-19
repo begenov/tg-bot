@@ -193,7 +193,7 @@ func (api *TelegramAPI) coverLetterHandler(update tgbotapi.Update, chatId int64,
 		age = models.RussianAgeInfo
 	}
 	api.bot.Send(msg)
-	time.Sleep(3 * time.Second)
+	time.Sleep(1 * time.Second)
 	msg.Text = age
 	api.usermapa[chatId].Stage = 6
 	api.bot.Send(msg)
@@ -251,26 +251,10 @@ func (api *TelegramAPI) genderHandler(update tgbotapi.Update, chatId int64, msg 
 	} else if api.usermapa[chatId].Lang == models.Russian {
 		msg.Text = ms
 	}
-	go func() {
-		err := api.services.User.Create(context.Background(), *api.usermapa[chatId])
-		log.Println(err)
-	}()
+	err = api.services.User.Create(context.Background(), *api.usermapa[chatId])
+	log.Println(err)
+
 	api.bot.Send(msg)
-
-	// if api.usermapa[chatId].Aim == 1 {
-	// 	// api.usermapa[chatId].Stage = 8
-	// 	msg.Text = "В какой сфере вы бы хотели найти работу?"
-	// 	inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(
-	// 		tgbotapi.NewInlineKeyboardRow(
-	// 			tgbotapi.NewInlineKeyboardButtonData("Торговля", "0"),
-	// 			tgbotapi.NewInlineKeyboardButtonData("Общепит", "1"),
-	// 			tgbotapi.NewInlineKeyboardButtonData("Другое", "2"),
-	// 			tgbotapi.NewInlineKeyboardButtonData("Пропустить шаг", "3"),
-	// 		),
-	// 	)
-
-	// 	msg.ReplyMarkup = inlineKeyboard
-	// 	api.bot.Send(msg)
 }
 
 func (api *TelegramAPI) Hello(message *tgbotapi.Message, chatId int64) {
