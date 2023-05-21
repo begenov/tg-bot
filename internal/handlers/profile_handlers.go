@@ -38,7 +38,6 @@ func (api *TelegramAPI) profileUser(update tgbotapi.Update, chatId int64, msg tg
 			break
 
 		}
-		// fallthrough
 	case 5:
 		if update.CallbackQuery != nil {
 			api.coverLetterHandler(update, chatId, msg)
@@ -297,17 +296,32 @@ func (api *TelegramAPI) Hello(message *tgbotapi.Message, chatId int64) {
 }
 
 func (api *TelegramAPI) nextRegistration(update tgbotapi.Update, chatId int64, msg tgbotapi.MessageConfig) {
-	msg.Text = "В какой сфере вы бы хотели найти работу?"
-	inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(
-		tgbotapi.NewInlineKeyboardRow(
-			tgbotapi.NewInlineKeyboardButtonData("Торговля", "1"),
-			tgbotapi.NewInlineKeyboardButtonData("Общепит", "2"),
-			tgbotapi.NewInlineKeyboardButtonData("Другое", "3"),
-			tgbotapi.NewInlineKeyboardButtonData("Пропустить шаг", "4"),
-		),
-	)
 
-	msg.ReplyMarkup = inlineKeyboard
-	api.bot.Send(msg)
-	api.usermapa[chatId].Stage = 1
+	if api.usermapa[chatId].Aim == 1 {
+		msg.Text = "В какой сфере вы бы хотели найти работу?"
+		inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(
+			tgbotapi.NewInlineKeyboardRow(
+				tgbotapi.NewInlineKeyboardButtonData("Торговля", "1"),
+				tgbotapi.NewInlineKeyboardButtonData("Общепит", "2"),
+				tgbotapi.NewInlineKeyboardButtonData("Другое", "3"),
+				tgbotapi.NewInlineKeyboardButtonData("Пропустить шаг", "4"),
+			),
+		)
+
+		msg.ReplyMarkup = inlineKeyboard
+		api.bot.Send(msg)
+		api.usermapa[chatId].Stage = 1
+	}
+	if api.usermapa[chatId].Aim == 0 {
+		msg.Text = "Отлично! Давайте приступим к поиску сотрудников!"
+		inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(
+			tgbotapi.NewInlineKeyboardRow(
+				tgbotapi.NewInlineKeyboardButtonData("Создать вакансию", "1"),
+			),
+		)
+		msg.ReplyMarkup = inlineKeyboard
+		api.bot.Send(msg)
+		api.usermapa[chatId].Stage = 1
+	}
+
 }

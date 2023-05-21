@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS job_seeker (
     FOREIGN KEY (user_profile_id) REFERENCES user_profile(id)
 );
 
-CREATE TABLE vacancies (
+CREATE TABLE IF NOT EXISTS vacancies (
     ID INT PRIMARY KEY,
     Company VARCHAR(255),
     BIN VARCHAR(20),

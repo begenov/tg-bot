@@ -55,7 +55,7 @@ func (api *TelegramAPI) StartTelegramAPI() error {
 				continue
 			}
 
-			if api.usermapa[chatId].Aim == 2 {
+			if api.usermapa[chatId].Aim == 0 {
 				api.jobPostingHandlers(update, msg, chatId)
 				continue
 			}
