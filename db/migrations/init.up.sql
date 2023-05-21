@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS job_seeker (
 );
 
 CREATE TABLE IF NOT EXISTS vacancies (
-    ID INTEGER PRIMARY KEY,
+    id INTEGER PRIMARY KEY,
     user_profile_id INT,
     company VARCHAR(255),
     bin VARCHAR(20),

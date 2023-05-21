@@ -25,12 +25,12 @@ func (r *JobPostingStorage) CreateJobPosting(ctx context.Context, job models.Vac
 	return nil
 }
 
-func (r *JobPostingStorage) JobSeekerByChatID(ctx context.Context, chatID int) (*models.JobSeeker, error) {
-	stmt := `SELECT id, user_profile_id, sphere, profession, salary FROM user_profile WHERE user_profile_id=$1;`
+func (r *JobPostingStorage) JobSeekerByChatID(ctx context.Context, chatID int) (*models.Vacancy, error) {
+	stmt := `SELECT id, user_profile_id, company, bin, sphere, position, salary, requirements, responsibilities FROM vacancies WHERE user_profile_id=$1;`
 
-	var job models.JobSeeker
+	var job models.Vacancy
 
-	if err := r.db.QueryRowContext(ctx, stmt, chatID).Scan(&job.ID, &job.ChatID, job.Sphere, job.Profession, job.Salary); err != nil {
+	if err := r.db.QueryRowContext(ctx, stmt, chatID).Scan(&job.ID, &job.ChatID, &job.Company, &job.BIN, &job.Sphere, &job.Position, &job.Salary, &job.Requirements, &job.Responsibilities); err != nil {
 		return nil, err
 	}
 
