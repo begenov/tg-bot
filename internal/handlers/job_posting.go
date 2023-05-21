@@ -10,14 +10,14 @@ func (api *TelegramAPI) jobPostingHandlers(update tgbotapi.Update, msg tgbotapi.
 	log.Println(api.usermapa[chatId].Stage)
 	switch api.usermapa[chatId].Stage {
 	case 0:
-
-		api.fillinGoutTheDataHandler(msg, chatId)
+		if update.CallbackQuery != nil {
+			api.fillinGoutTheDataHandler(msg, chatId)
+		}
 
 	case 1:
-
-		// if update.CallbackQuery != nil {
-		// 	api.fillinGoutTheDataHandler(msg, chatId)
-		// }
+		if update.CallbackQuery != nil {
+			api.jobPostingWorkFieldHandler(update, msg, chatId)
+		}
 	case 2:
 		if update.CallbackQuery != nil {
 
@@ -48,8 +48,6 @@ func (api *TelegramAPI) createJobPostingHandler(msg tgbotapi.MessageConfig, chat
 	)
 	msg.ReplyMarkup = inlineKeyboard
 	api.bot.Send(msg)
-	api.usermapa[chatId].Stage = 1
-
 }
 
 func (api *TelegramAPI) fillinGoutTheDataHandler(msg tgbotapi.MessageConfig, chatId int64) {
@@ -63,7 +61,12 @@ func (api *TelegramAPI) fillinGoutTheDataHandler(msg tgbotapi.MessageConfig, cha
 			tgbotapi.NewInlineKeyboardButtonData("Пропустить шаг", "4"),
 		),
 	)
+
 	msg.ReplyMarkup = inlineKeyboard
 	api.bot.Send(msg)
 	api.usermapa[chatId].Stage = 1
+}
+
+func (api *TelegramAPI) jobPostingWorkFieldHandler(update tgbotapi.Update, msg tgbotapi.MessageConfig, chatId int64) {
+
 }

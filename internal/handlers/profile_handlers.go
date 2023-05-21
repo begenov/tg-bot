@@ -286,6 +286,7 @@ func (api *TelegramAPI) genderHandler(update tgbotapi.Update, chatId int64, msg 
 			),
 		)
 		msg.ReplyMarkup = inlineKeyboard
+		api.usermapa[chatId].Stage = 0
 		api.bot.Send(msg)
 	}
 }
