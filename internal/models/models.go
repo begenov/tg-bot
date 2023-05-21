@@ -1,5 +1,7 @@
 package models
 
+import "time"
+
 type Update struct {
 	UpdateID int     `json:"update_id"`
 	Message  Message `json:"message"`
@@ -48,4 +50,19 @@ type JobSeeker struct {
 	Sphere     string
 	Profession string
 	Salary     string
+}
+
+type Vacancy struct {
+	ID               int
+	Company          string
+	BIN              string
+	Sphere           string
+	Position         string
+	Salary           string
+	Requirements     string
+	Responsibilities string
+	Status           string
+	CreationDate     time.Time
+	PublicationDate  time.Time
+	ModerationDate   time.Time
 }

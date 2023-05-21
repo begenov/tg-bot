@@ -47,6 +47,8 @@ const (
 	KazakhGenderFemale     = "Әйел"
 )
 
+const ()
+
 var Fields = []string{"Торговля", "Общепит", "Строительство"}
 
 var Field = make(map[int][]string)

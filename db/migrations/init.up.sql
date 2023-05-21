@@ -18,3 +18,18 @@ CREATE TABLE IF NOT EXISTS job_seeker (
 		salary TEXT,
     FOREIGN KEY (user_profile_id) REFERENCES user_profile(id)
 );
+
+CREATE TABLE vacancies (
+    ID INT PRIMARY KEY,
+    Company VARCHAR(255),
+    BIN VARCHAR(20),
+    Sphere VARCHAR(255),
+    Position VARCHAR(255),
+    Salary VARCHAR(255),
+    Requirements TEXT,
+    Responsibilities TEXT,
+    Status VARCHAR(20),
+    CreationDate DATETIME,
+    PublicationDate DATETIME,
+    ModerationDate DATETIME
+);
