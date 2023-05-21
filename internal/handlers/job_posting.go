@@ -144,11 +144,13 @@ func (api *TelegramAPI) handleCompanyNameInput(update tgbotapi.Update, chatId in
 
 	msg.Text = "Введите, пожалуйста, наименование вашей компании?"
 	api.bot.Send(msg)
+	company := msg.Text
+	api.usermapa[chatId].Company = company
 	api.usermapa[chatId].Stage = 4
 }
 
 func (api *TelegramAPI) handleBINInput(update tgbotapi.Update, chatId int64, msg tgbotapi.MessageConfig) {
-	company := msg.Text
+	company := update.Message.Text
 	api.usermapa[chatId].Company = company
 	msg.Text = "Введите, пожалуйста, БИН вашей компании:"
 	msg.ReplyMarkup = tgbotapi.ForceReply{ForceReply: true, Selective: true}
@@ -157,7 +159,7 @@ func (api *TelegramAPI) handleBINInput(update tgbotapi.Update, chatId int64, msg
 }
 
 func (api *TelegramAPI) handleCandidateRequirementsInput(update tgbotapi.Update, chatId int64, msg tgbotapi.MessageConfig) {
-	bin := msg.Text
+	bin := update.Message.Text
 	api.usermapa[chatId].BIN = bin
 	msg.Text = "Какие ваши требования к кандидату?"
 	msg.ReplyMarkup = tgbotapi.ForceReply{ForceReply: true, Selective: true}
@@ -166,7 +168,7 @@ func (api *TelegramAPI) handleCandidateRequirementsInput(update tgbotapi.Update,
 }
 
 func (api *TelegramAPI) handleCandidateResponsibilitiesInput(update tgbotapi.Update, chatId int64, msg tgbotapi.MessageConfig) {
-	requirement := msg.Text
+	requirement := update.Message.Text
 	api.usermapa[chatId].Requirement = requirement
 	msg.Text = "Какие функциональные обязанности кандидата?"
 	msg.ReplyMarkup = tgbotapi.ForceReply{ForceReply: true, Selective: true}
@@ -175,8 +177,9 @@ func (api *TelegramAPI) handleCandidateResponsibilitiesInput(update tgbotapi.Upd
 }
 
 func (api *TelegramAPI) handleVacancyPublication(update tgbotapi.Update, chatId int64, msg tgbotapi.MessageConfig) {
-	responsibilities := msg.Text
+	responsibilities := update.Message.Text
 	api.usermapa[chatId].Responsibilities = responsibilities
+
 	msg.Text = "Спасибо, ваша вакансия сохранена. Она будет обработана модератором. В скором времени вы получите уведомление."
 	api.bot.Send(msg)
 	api.usermapa[chatId].Stage = 8
