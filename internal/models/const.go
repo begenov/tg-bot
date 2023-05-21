@@ -9,7 +9,7 @@ const (
 
 // Russian
 const (
-	Russian                 = "russт ian"
+	Russian                 = "russian"
 	ChoseRussian            = "Вы выбрали русский язык"
 	RussianName             = "Введите имя: "
 	RussianHello            = "Здравствуйте, "
