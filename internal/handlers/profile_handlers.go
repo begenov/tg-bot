@@ -55,7 +55,11 @@ func (api *TelegramAPI) profileUser(update tgbotapi.Update, chatId int64, msg tg
 
 		if update.CallbackQuery != nil {
 			api.genderHandler(update, chatId, msg)
-			api.usermapa[chatId].Stage = 0
+
+			if api.usermapa[chatId].Aim == 1 {
+				api.nextRegistration(update, chatId, msg)
+			}
+
 			break
 		}
 
@@ -235,17 +239,37 @@ func (api *TelegramAPI) genderHandler(update tgbotapi.Update, chatId int64, msg 
 	if err != nil {
 		log.Fatal(err)
 	}
+	api.usermapa[chatId].Gender = gen
 	info := ""
+	aim := ""
+	gender := ""
 	if api.usermapa[chatId].Lang == models.Kazakh {
+		if api.usermapa[chatId].Aim == 1 {
+			aim = "Жұмыс іздеу"
+		} else {
+			aim = "Қызметкерлерді іздеу"
+		}
+		if api.usermapa[chatId].Gender == 1 {
+			gender = "Ер"
+		} else {
+			gender = "Әйел"
+		}
 		info = models.InfoInKazakh
 	} else if api.usermapa[chatId].Lang == models.Russian {
+		if api.usermapa[chatId].Aim == 1 {
+			aim = "Поиск вакансий"
+		} else {
+			aim = "Поиск сотрудников"
+		}
+		if api.usermapa[chatId].Gender == 1 {
+			gender = "Мужской"
+		} else {
+			gender = "Женский"
+		}
 		info = models.InfoInRussian
 	}
-
-	api.usermapa[chatId].Gender = gen
 	api.usermapa[chatId].ChatID = int(chatId)
-	api.usermapa[chatId].Stage = 8
-	ms := fmt.Sprintf(info, api.usermapa[chatId].Name, api.usermapa[chatId].Phone, api.usermapa[chatId].Aim, api.usermapa[chatId].Age, api.usermapa[chatId].Gender)
+	ms := fmt.Sprintf(info, api.usermapa[chatId].Name, api.usermapa[chatId].Phone, aim, api.usermapa[chatId].Age, gender)
 	if api.usermapa[chatId].Lang == models.Kazakh {
 		msg.Text = ms
 	} else if api.usermapa[chatId].Lang == models.Russian {
@@ -270,4 +294,20 @@ func (api *TelegramAPI) Hello(message *tgbotapi.Message, chatId int64) {
 	api.usermapa[chatId] = &models.User{Stage: 0}
 
 	api.bot.Send(msg)
+}
+
+func (api *TelegramAPI) nextRegistration(update tgbotapi.Update, chatId int64, msg tgbotapi.MessageConfig) {
+	msg.Text = "В какой сфере вы бы хотели найти работу?"
+	inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(
+		tgbotapi.NewInlineKeyboardRow(
+			tgbotapi.NewInlineKeyboardButtonData("Торговля", "1"),
+			tgbotapi.NewInlineKeyboardButtonData("Общепит", "2"),
+			tgbotapi.NewInlineKeyboardButtonData("Другое", "3"),
+			tgbotapi.NewInlineKeyboardButtonData("Пропустить шаг", "4"),
+		),
+	)
+
+	msg.ReplyMarkup = inlineKeyboard
+	api.bot.Send(msg)
+	api.usermapa[chatId].Stage = 1
 }
