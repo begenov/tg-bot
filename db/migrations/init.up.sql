@@ -20,16 +20,13 @@ CREATE TABLE IF NOT EXISTS job_seeker (
 );
 
 CREATE TABLE IF NOT EXISTS vacancies (
-    ID INT PRIMARY KEY,
-    Company VARCHAR(255),
-    BIN VARCHAR(20),
-    Sphere VARCHAR(255),
-    Position VARCHAR(255),
-    Salary VARCHAR(255),
-    Requirements TEXT,
-    Responsibilities TEXT,
-    Status VARCHAR(20),
-    CreationDate DATETIME,
-    PublicationDate DATETIME,
-    ModerationDate DATETIME
+    ID INTEGER PRIMARY KEY,
+    user_profile_id INT,
+    company VARCHAR(255),
+    bin VARCHAR(20),
+    sphere VARCHAR(255),
+    position VARCHAR(255),
+    salary VARCHAR(255),
+    requirements TEXT,
+    responsibilities TEXT
 );

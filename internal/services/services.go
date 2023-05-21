@@ -17,14 +17,20 @@ type JobSeeker interface {
 	JobSeekerByChatID(ctx context.Context, chatID int) (*models.JobSeeker, error)
 }
 
+type JobPosting interface {
+	CreateJobPosting(ctx context.Context, v models.Vacancy) error
+}
+
 type Service struct {
-	User      UserServiceIR
-	JobSeeker JobSeeker
+	User       UserServiceIR
+	JobSeeker  JobSeeker
+	JobPosting JobPosting
 }
 
 func NewService(repos *repository.Repository) *Service {
 	return &Service{
-		User:      NewUserProfileService(repos.User),
-		JobSeeker: NewJobSeekerService(repos.JobSeeker),
+		User:       NewUserProfileService(repos.User),
+		JobSeeker:  NewJobSeekerService(repos.JobSeeker),
+		JobPosting: NewJobPostingService(repos.JobPosting),
 	}
 }

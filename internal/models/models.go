@@ -1,7 +1,5 @@
 package models
 
-import "time"
-
 type Update struct {
 	UpdateID int     `json:"update_id"`
 	Message  Message `json:"message"`
@@ -67,8 +65,5 @@ type Vacancy struct {
 	Salary           string
 	Requirements     string
 	Responsibilities string
-	Status           string
-	CreationDate     time.Time
-	PublicationDate  time.Time
-	ModerationDate   time.Time
+	ChatID           int64
 }

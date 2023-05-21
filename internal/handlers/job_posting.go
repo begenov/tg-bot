@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"context"
 	"log"
 	"strconv"
 
@@ -179,7 +180,20 @@ func (api *TelegramAPI) handleCandidateResponsibilitiesInput(update tgbotapi.Upd
 func (api *TelegramAPI) handleVacancyPublication(update tgbotapi.Update, chatId int64, msg tgbotapi.MessageConfig) {
 	responsibilities := update.Message.Text
 	api.usermapa[chatId].Responsibilities = responsibilities
-
+	user := api.usermapa[chatId]
+	err := api.services.JobPosting.CreateJobPosting(context.Background(), models.Vacancy{
+		BIN:              user.BIN,
+		Company:          user.Company,
+		Sphere:           user.Field,
+		Position:         user.Job,
+		Salary:           user.Salary,
+		Requirements:     user.Requirement,
+		Responsibilities: user.Responsibilities,
+		ChatID:           chatId,
+	})
+	if err != nil {
+		log.Fatal(err)
+	}
 	msg.Text = "Спасибо, ваша вакансия сохранена. Она будет обработана модератором. В скором времени вы получите уведомление."
 	api.bot.Send(msg)
 	api.usermapa[chatId].Stage = 8

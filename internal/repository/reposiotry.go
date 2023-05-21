@@ -17,14 +17,20 @@ type JobSeeker interface {
 	CreateJobSeeker(ctx context.Context, job models.JobSeeker) error
 }
 
+type JobPosting interface {
+	CreateJobPosting(ctx context.Context, job models.Vacancy) error
+}
+
 type Repository struct {
-	User      UserIR
-	JobSeeker JobSeeker
+	User       UserIR
+	JobSeeker  JobSeeker
+	JobPosting JobPosting
 }
 
 func NewRepository(db *sql.DB) *Repository {
 	return &Repository{
-		User:      NewProfileRepository(db),
-		JobSeeker: NewJobSeekerRepo(db),
+		User:       NewProfileRepository(db),
+		JobSeeker:  NewJobSeekerRepo(db),
+		JobPosting: NewJobPostingStorage(db),
 	}
 }
