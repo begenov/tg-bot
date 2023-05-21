@@ -20,10 +20,6 @@ func (api *TelegramAPI) jobSeekersHandler(update tgbotapi.Update, msg tgbotapi.M
 		if update.CallbackQuery != nil {
 			//
 		}
-	case 6:
-		if update.CallbackQuery != nil {
-			api.ahotherJobHandler(update, chatId, msg)
-		}
 	case 3:
 		if update.CallbackQuery != nil {
 			api.salaryHandler(update, chatId, msg)
