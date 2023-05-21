@@ -42,6 +42,12 @@ type User struct {
 	Job     string
 	JobId   int
 	Salary  string
+
+	//
+	Company          string
+	BIN              string
+	Requirement      string
+	Responsibilities string
 }
 
 type JobSeeker struct {
