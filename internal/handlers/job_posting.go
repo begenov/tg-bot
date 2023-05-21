@@ -1,15 +1,23 @@
 package handlers
 
-import tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
+import (
+	"log"
+
+	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
+)
 
 func (api *TelegramAPI) jobPostingHandlers(update tgbotapi.Update, msg tgbotapi.MessageConfig, chatId int64) {
+	log.Println(api.usermapa[chatId].Stage)
 	switch api.usermapa[chatId].Stage {
 	case 0:
-		api.createJobPostingHandler(msg, chatId)
-	case 1:
-		if update.CallbackQuery != nil {
 
-		}
+		api.fillinGoutTheDataHandler(msg, chatId)
+
+	case 1:
+
+		// if update.CallbackQuery != nil {
+		// 	api.fillinGoutTheDataHandler(msg, chatId)
+		// }
 	case 2:
 		if update.CallbackQuery != nil {
 
@@ -27,6 +35,7 @@ func (api *TelegramAPI) jobPostingHandlers(update tgbotapi.Update, msg tgbotapi.
 
 		}
 	default:
+		api.createJobPostingHandler(msg, chatId)
 	}
 }
 
@@ -41,4 +50,20 @@ func (api *TelegramAPI) createJobPostingHandler(msg tgbotapi.MessageConfig, chat
 	api.bot.Send(msg)
 	api.usermapa[chatId].Stage = 1
 
+}
+
+func (api *TelegramAPI) fillinGoutTheDataHandler(msg tgbotapi.MessageConfig, chatId int64) {
+	msg.Text = "В какой сфере Вы работаете?"
+
+	inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(
+		tgbotapi.NewInlineKeyboardRow(
+			tgbotapi.NewInlineKeyboardButtonData("Торговля", "1"),
+			tgbotapi.NewInlineKeyboardButtonData("Общепит", "2"),
+			tgbotapi.NewInlineKeyboardButtonData("Другое", "3"),
+			tgbotapi.NewInlineKeyboardButtonData("Пропустить шаг", "4"),
+		),
+	)
+	msg.ReplyMarkup = inlineKeyboard
+	api.bot.Send(msg)
+	api.usermapa[chatId].Stage = 1
 }

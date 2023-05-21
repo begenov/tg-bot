@@ -278,6 +278,16 @@ func (api *TelegramAPI) genderHandler(update tgbotapi.Update, chatId int64, msg 
 	log.Println(err)
 
 	api.bot.Send(msg)
+	if api.usermapa[chatId].Aim == 0 {
+		msg.Text = "Отлично! Давайте приступим к поиску сотрудников!"
+		inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(
+			tgbotapi.NewInlineKeyboardRow(
+				tgbotapi.NewInlineKeyboardButtonData("Создать вакансию", "1"),
+			),
+		)
+		msg.ReplyMarkup = inlineKeyboard
+		api.bot.Send(msg)
+	}
 }
 
 func (api *TelegramAPI) Hello(message *tgbotapi.Message, chatId int64) {
@@ -296,7 +306,6 @@ func (api *TelegramAPI) Hello(message *tgbotapi.Message, chatId int64) {
 }
 
 func (api *TelegramAPI) nextRegistration(update tgbotapi.Update, chatId int64, msg tgbotapi.MessageConfig) {
-
 	if api.usermapa[chatId].Aim == 1 {
 		msg.Text = "В какой сфере вы бы хотели найти работу?"
 		inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(
