@@ -46,6 +46,14 @@ func (api *TelegramAPI) profileUser(update tgbotapi.Update, chatId int64, msg tg
 		if update.CallbackQuery != nil {
 			api.coverLetterHandler(update, chatId, msg)
 			break
+		} else {
+			if api.usermapa[chatId].Lang == models.Kazakh {
+				msg.Text = "Роль танданыз"
+			} else if api.usermapa[chatId].Lang == models.Russian {
+				msg.Text = "Выберите роль"
+			}
+			api.bot.Send(msg)
+			return
 		}
 	case 6:
 		if update.Message != nil {
@@ -64,6 +72,14 @@ func (api *TelegramAPI) profileUser(update tgbotapi.Update, chatId int64, msg tg
 			}
 
 			break
+		} else {
+			if api.usermapa[chatId].Lang == models.Kazakh {
+				msg.Text = "Жынысты дұрыс таңдаңыз"
+			} else if api.usermapa[chatId].Lang == models.Russian {
+				msg.Text = "Выберите пол правильно"
+			}
+			api.bot.Send(msg)
+			return
 		}
 
 	}
@@ -204,8 +220,13 @@ func (api *TelegramAPI) nameHandler(update tgbotapi.Update, chatId int64, msg tg
 func (api *TelegramAPI) coverLetterHandler(update tgbotapi.Update, chatId int64, msg tgbotapi.MessageConfig) {
 	aimNum, err := strconv.Atoi(update.CallbackQuery.Data)
 	if err != nil {
-		log.Println("-----------------------error in aim")
-		log.Fatal(err)
+		if api.usermapa[chatId].Lang == models.Kazakh {
+			msg.Text = "Роль танданыз"
+		} else if api.usermapa[chatId].Lang == models.Russian {
+			msg.Text = "Выберите роль"
+		}
+		api.bot.Send(msg)
+		return
 	}
 	api.usermapa[chatId].Aim = aimNum
 
@@ -226,8 +247,17 @@ func (api *TelegramAPI) coverLetterHandler(update tgbotapi.Update, chatId int64,
 }
 
 func (api *TelegramAPI) ageUserHandler(update tgbotapi.Update, chatId int64, msg tgbotapi.MessageConfig) {
-	api.usermapa[chatId].Age, _ = strconv.Atoi(msg.Text)
-
+	var err error
+	api.usermapa[chatId].Age, err = strconv.Atoi(msg.Text)
+	if err != nil {
+		if api.usermapa[chatId].Lang == models.Kazakh {
+			msg.Text = "Жасыңызды дұрыс енгізіңіз"
+		} else if api.usermapa[chatId].Lang == models.Russian {
+			msg.Text = "Укажите возраст правильно"
+		}
+		api.bot.Send(msg)
+		return
+	}
 	showGender := ""
 
 	var genderMale, genderFemale string
@@ -259,7 +289,13 @@ func (api *TelegramAPI) ageUserHandler(update tgbotapi.Update, chatId int64, msg
 func (api *TelegramAPI) genderHandler(update tgbotapi.Update, chatId int64, msg tgbotapi.MessageConfig) {
 	gen, err := strconv.Atoi(update.CallbackQuery.Data)
 	if err != nil {
-		log.Fatal(err)
+		if api.usermapa[chatId].Lang == models.Kazakh {
+			msg.Text = "Жынысты дұрыс таңдаңыз"
+		} else if api.usermapa[chatId].Lang == models.Russian {
+			msg.Text = "Выберите пол правильно"
+		}
+		api.bot.Send(msg)
+		return
 	}
 	api.usermapa[chatId].Gender = gen
 	info := ""
