@@ -17,6 +17,9 @@ func (api *TelegramAPI) profileUser(update tgbotapi.Update, chatId int64, msg tg
 		if update.CallbackQuery != nil {
 			api.choseKazakhHandler(update, msg, chatId)
 			break
+		} else {
+			msg.Text = "Выберите язык"
+			api.bot.Send(msg)
 		}
 	case 1:
 		if update.Message != nil {
