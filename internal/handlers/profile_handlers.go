@@ -189,6 +189,11 @@ func (api *TelegramAPI) checkPhoneNumberHandler(update tgbotapi.Update, chatId i
 
 func (api *TelegramAPI) nameHandler(update tgbotapi.Update, chatId int64, msg tgbotapi.MessageConfig) {
 	name := update.Message.Text
+	if !api.isNameValid(name) {
+		msg.Text = "Имя не соответсвует критериям.\nПожалуйста введите снова ваше имяю\nИмя должно содержать лишь латинские либо кириллические буквы.\nПример1:Вася\nПример2:Вася Пупкин"
+		api.bot.Send(msg)
+		return
+	}
 	api.usermapa[chatId].Name = name
 
 	shareButton := tgbotapi.NewKeyboardButtonContact(models.RussianNumberButton)
@@ -392,7 +397,6 @@ func (api *TelegramAPI) nextRegistration(update tgbotapi.Update, chatId int64, m
 		api.bot.Send(msg)
 		api.usermapa[chatId].Stage = 1
 	}
-
 }
 
 // Validate
