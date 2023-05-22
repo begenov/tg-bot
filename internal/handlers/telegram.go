@@ -3,6 +3,8 @@ package handlers
 import (
 	"context"
 	"fmt"
+	"regexp"
+	"strings"
 
 	"github.com/begenov/tg-bot/internal/models"
 	"github.com/begenov/tg-bot/internal/services"
@@ -63,4 +65,20 @@ func (api *TelegramAPI) StartTelegramAPI() error {
 	}
 
 	return nil
+}
+
+func (u TelegramAPI) isNameValid(name string) bool {
+	parts := strings.Split(name, " ")
+	if len(parts) == 1 {
+		pattern := "^[A-Za-zА-Яа-я]+$"
+		regex := regexp.MustCompile(pattern)
+		// Check if the name matches the pattern
+		return regex.MatchString(name)
+	} else if len(parts) == 2 {
+		pattern := "^[A-Za-zА-Яа-я]+ [A-Za-zА-Яа-я]+$"
+		regex := regexp.MustCompile(pattern)
+		// Check if the name and surname match the pattern
+		return regex.MatchString(name)
+	}
+	return false
 }
