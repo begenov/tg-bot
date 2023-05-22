@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"regexp"
 	"strconv"
 	"time"
 
@@ -90,7 +91,16 @@ func (api *TelegramAPI) choseKazakhHandler(update tgbotapi.Update, msg tgbotapi.
 
 func (api *TelegramAPI) phoneNumberHandler1(update tgbotapi.Update, chatId int64, msg tgbotapi.MessageConfig) {
 	phoneNumber := update.Message.Contact.PhoneNumber
-	// log.Fatal(phoneNumber)
+	ok := validatePhoneNumber(phoneNumber)
+	if !ok {
+		if api.usermapa[chatId].Lang == models.Kazakh {
+			msg.Text = "Дұрыс Нөмірді сақтаңыз"
+		} else if api.usermapa[chatId].Lang == models.Russian {
+			msg.Text = "Ведите праильный номер"
+		}
+		api.bot.Send(msg)
+		return
+	}
 	api.usermapa[chatId].Phone = phoneNumber
 	api.usermapa[chatId].Stage = 4
 	if api.usermapa[chatId].Lang == models.Kazakh {
@@ -103,6 +113,16 @@ func (api *TelegramAPI) phoneNumberHandler1(update tgbotapi.Update, chatId int64
 
 func (api *TelegramAPI) phoneNumberHandler2(update tgbotapi.Update, chatId int64, msg tgbotapi.MessageConfig) {
 	phoneNumber := update.Message.Text
+	ok := validatePhoneNumber(phoneNumber)
+	if !ok {
+		if api.usermapa[chatId].Lang == models.Kazakh {
+			msg.Text = "Дұрыс Нөмірді сақтаңыз"
+		} else if api.usermapa[chatId].Lang == models.Russian {
+			msg.Text = "Ведите праильный номер"
+		}
+		api.bot.Send(msg)
+		return
+	}
 	api.usermapa[chatId].Phone = phoneNumber
 	api.usermapa[chatId].Stage = 4
 	if api.usermapa[chatId].Lang == models.Kazakh {
@@ -337,4 +357,17 @@ func (api *TelegramAPI) nextRegistration(update tgbotapi.Update, chatId int64, m
 		api.usermapa[chatId].Stage = 1
 	}
 
+}
+
+// Validate
+
+func validatePhoneNumber(phoneNumber string) bool {
+	// Паттерн для проверки формата номера телефона
+	pattern := `^\+7\d{10}$`
+
+	// Создание регулярного выражения
+	regex := regexp.MustCompile(pattern)
+
+	// Проверка соответствия паттерну
+	return regex.MatchString(phoneNumber)
 }
