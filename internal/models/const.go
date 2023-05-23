@@ -21,7 +21,7 @@ const (
 	RussianEmployeeButton   = "ишу сотрудника"
 	RussianAgeButton        = "ввести возраст"
 	RussianAccompanyingMess = "Сопроводительное письмо"
-	RussianAgeInfo          = "Осталось совсем немного до окончания регистрации. Введите, пожалуйста, свой возраст."
+	RussianAgeInfo          = "Осталось совсем немного до окончания регистрации.\n Введите, пожалуйста, свой возраст."
 	RussianGender           = "Укажите пол"
 	RussianGenderMale       = "Мужчина"
 	RussianGenderFemale     = "Женский"
@@ -41,17 +41,18 @@ const (
 	KazakhEmployeeButton   = "қызметкер іздеу"
 	KazakhAgeButton        = "жасын енгізіңіз"
 	KazakhAccompanyingMess = "Ілеспе хат"
-	KazakhAgeInfo          = "Тіркеу аяқталғанға дейін аз ғана уақыт қалды. Жасыңызды енгізіңіз."
+	KazakhAgeInfo          = "Тіркеу аяқталғанға дейін аз ғана уақыт қалды.\n Жасыңызды енгізіңіз."
 	KazakhGender           = "Жынысын көрсетіңіз"
 	KazakhGenderMale       = "Ер адам"
 	KazakhGenderFemale     = "Әйел"
 )
 
-const ()
-
 var Fields = []string{"Торговля", "Общепит", "Строительство"}
 
-var Field = make(map[int][]string)
+var (
+	Field   = make(map[int][]string)
+	FieldKZ = make(map[int][]string)
+)
 
 func init() {
 	Field[1] = []string{"Продавец-консультант", "Менеджер по продажам", "Мерчандайзер", "Кассир"}
@@ -59,4 +60,10 @@ func init() {
 	Field[2] = []string{"Повар", "Бариста", "Официант", "Бармен"}
 
 	Field[3] = []string{"Строитель", "Архитектор", "Архитектор", "Сварщик"}
+
+	FieldKZ[1] = []string{"Сатушы", "Сату менеджері", "Мерчандайзер", "Кассир"}
+
+	FieldKZ[2] = []string{"Аспаз", "Бариста", "Официант", "Бармен"}
+
+	FieldKZ[3] = []string{"Құрылысшы", "Архитектор", "Архитектор", "Дәнекерлеуші(Сварщик)"}
 }

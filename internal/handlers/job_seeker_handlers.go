@@ -52,13 +52,19 @@ func (api *TelegramAPI) jobSeekersHandler(update tgbotapi.Update, msg tgbotapi.M
 func (api *TelegramAPI) workFieldHandler(update tgbotapi.Update, chatId int64, msg tgbotapi.MessageConfig) {
 	workField, _ := strconv.Atoi(update.CallbackQuery.Data)
 
+	user := api.usermapa[chatId]
+
 	switch workField {
 	case 1:
 		api.usermapa[chatId].Stage = 3
 	case 2:
 		api.usermapa[chatId].Stage = 3
 	case 3:
-		msg.Text = "Напиши сферу"
+		text := "Напиши сферу"
+		if user.Lang == models.Kazakh {
+			text = "Сфераны жазыңыз"
+		}
+		msg.Text = text
 		api.bot.Send(msg)
 		api.usermapa[chatId].Stage = 5
 		return
@@ -72,9 +78,13 @@ func (api *TelegramAPI) workFieldHandler(update tgbotapi.Update, chatId int64, m
 	} else {
 		api.usermapa[chatId].Field = "Нужно указать! (Другое или что-нибудь еще)"
 	}
-	msg.Text = "Кем бы вы хотели работать?"
+	var Jobs []string
 
-	Jobs := models.Field[workField]
+	if user.Lang == models.Kazakh {
+		Jobs = models.FieldKZ[workField]
+	} else {
+		Jobs = models.Field[workField]
+	}
 	keyboard := tgbotapi.NewInlineKeyboardRow()
 	for _, job := range Jobs {
 		button := tgbotapi.NewInlineKeyboardButtonData(job, job)
@@ -82,15 +92,25 @@ func (api *TelegramAPI) workFieldHandler(update tgbotapi.Update, chatId int64, m
 	}
 	inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(keyboard)
 	msg.ReplyMarkup = inlineKeyboard
+	text := "Кем бы вы хотели работать?"
+	if user.Lang == models.Kazakh {
+		text = "Сіз кім болып жұмыс істегіңіз келеді?"
+	}
+	msg.Text = text
 	api.bot.Send(msg)
 	api.usermapa[chatId].Stage = 2
 }
 
 func (api *TelegramAPI) jobHandler(update tgbotapi.Update, chatId int64, msg tgbotapi.MessageConfig) {
+	user := api.usermapa[chatId]
+
 	job := update.CallbackQuery.Data
 	api.usermapa[chatId].Job = job
 
-	msg.Text = "Какую зарплату вы хотели бы получить?"
+	text := "Какую зарплату вы хотели бы получить?"
+	if user.Lang == models.Kazakh {
+		text = "Сіз қандай жалақы алғыңыз келеді?"
+	}
 	inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(
 		tgbotapi.NewInlineKeyboardRow(
 			tgbotapi.NewInlineKeyboardButtonData("50,000 - 150,000", "50,000 - 150,000"),
@@ -101,6 +121,7 @@ func (api *TelegramAPI) jobHandler(update tgbotapi.Update, chatId int64, msg tgb
 			tgbotapi.NewInlineKeyboardButtonData("700,000 < ", "700,000 < "),
 		),
 	)
+	msg.Text = text
 
 	msg.ReplyMarkup = inlineKeyboard
 	api.bot.Send(msg)
@@ -111,8 +132,11 @@ func (api *TelegramAPI) jobHandler(update tgbotapi.Update, chatId int64, msg tgb
 }
 
 func (api *TelegramAPI) salaryHandler(update tgbotapi.Update, chatId int64, msg tgbotapi.MessageConfig) {
+	user := api.usermapa[chatId]
+
 	salary := update.CallbackQuery.Data
 	api.usermapa[chatId].Salary = salary
+
 	if err := api.services.JobSeeker.CreateJobSeeker(context.Background(), models.JobSeeker{
 		Sphere:     api.usermapa[chatId].Field,
 		Profession: api.usermapa[chatId].Job,
@@ -121,11 +145,19 @@ func (api *TelegramAPI) salaryHandler(update tgbotapi.Update, chatId int64, msg 
 	}); err != nil {
 		log.Fatalln(err)
 	}
-	msg.Text = "Начать поиск подходящих вакансий?"
+	text := "Начать поиск подходящих вакансий?"
+	confirm := "Да"
+	decline := "Нет"
+	if user.Lang == models.Kazakh {
+		text = "Жұмыс орындарын іздеуді бастайық па?"
+		confirm = "Иә"
+		decline = "Жоқ"
+	}
+	msg.Text = text
 	inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(
 		tgbotapi.NewInlineKeyboardRow(
-			tgbotapi.NewInlineKeyboardButtonData("ДА", "1"),
-			tgbotapi.NewInlineKeyboardButtonData("НЕТ", "0"),
+			tgbotapi.NewInlineKeyboardButtonData(confirm, "1"),
+			tgbotapi.NewInlineKeyboardButtonData(decline, "0"),
 		),
 	)
 	msg.ReplyMarkup = inlineKeyboard
@@ -141,7 +173,16 @@ func (api *TelegramAPI) jobFinder(update tgbotapi.Update, chatId int64, msg tgbo
 	if answer == 0 {
 		return
 	}
-	message := fmt.Sprintf("По вашему запросу: «%s – %s – %s тг.» найдено __ вакансий", api.usermapa[chatId].Field, api.usermapa[chatId].Job, api.usermapa[chatId].Salary)
+
+	user := api.usermapa[chatId]
+
+	text := "По вашему запросу: «%s – %s – %s тг.» найдено __ вакансий"
+
+	if user.Lang == models.Kazakh {
+		text = "Сіздің сұранысыңыз бойынша: «%s - %s- % S тг.» __жұмыс орны табылды"
+	}
+
+	message := fmt.Sprintf(text, api.usermapa[chatId].Field, api.usermapa[chatId].Job, api.usermapa[chatId].Salary)
 	msg.Text = message
 	api.bot.Send(msg)
 }
