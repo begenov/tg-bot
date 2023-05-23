@@ -189,7 +189,7 @@ func (api *TelegramAPI) checkPhoneNumberHandler(update tgbotapi.Update, chatId i
 
 func (api *TelegramAPI) nameHandler(update tgbotapi.Update, chatId int64, msg tgbotapi.MessageConfig) {
 	name := update.Message.Text
-	if !api.isNameValid(name) {
+	if !api.validate.IsNameValid(name) {
 		msg.Text = "Имя не соответсвует критериям.\nПожалуйста введите снова ваше имяю\nИмя должно содержать лишь латинские либо кириллические буквы.\nПример1:Вася\nПример2:Вася Пупкин"
 		api.bot.Send(msg)
 		return
