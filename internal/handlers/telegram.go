@@ -13,7 +13,7 @@ type TelegramAPI struct {
 	bot      *tgbotapi.BotAPI
 	services *services.Service
 	usermapa map[int64]*models.User
-	validate services.Validater
+	validate services.Validation
 }
 
 func NewTelegramAPI(bot *tgbotapi.BotAPI, servces *services.Service) *TelegramAPI {

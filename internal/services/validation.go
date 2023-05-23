@@ -5,10 +5,10 @@ import (
 	"strings"
 )
 
-type Validater struct {
+type Validation struct {
 }
 
-func (u Validater) IsNameValid(name string) bool {
+func (u Validation) IsNameValid(name string) bool {
 	parts := strings.Split(name, " ")
 	if len(parts) == 1 {
 		pattern := "^[A-Za-zА-Яа-я]+$"
